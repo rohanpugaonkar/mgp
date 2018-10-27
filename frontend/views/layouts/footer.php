@@ -84,20 +84,17 @@
 		<?php 
 			$model = new LoginForm();
 		    $form = ActiveForm::begin([
-		        'options' => ['class' => 'form-horizontal mygym-modal','id' => 'login'],
+		        'options' => ['class' => 'form-horizontal','id' => 'login'],
 		        'action'=>'login'
 		    ]);
 		?>
-			<div class="form-group">
-				<!-- <label class="control-label">Username</label>
-				<input type="text" class="form-control" placeholder="Username" required/> -->
-				<?= $form->field($model, 'username')->textInput(['placeholder' => "Username"])->label('Username')?>
-			</div>
-			<div class="form-group">
-				<!-- <label class="control-label">Password</label>
-				<input type="password" class="form-control" placeholder="*********" required/> -->
-				<?= $form->field($model, 'password')->textInput(['placeholder' => "*********"])->label('Password') ?>
-			</div>
+			
+							
+			<?= $form->field($model, 'username')->textInput(['placeholder' => "Username"]); ?>
+			
+			
+			<?= $form->field($model, 'password')->textInput(['placeholder' => "*********"]); ?>
+			
 			<div class="form-group">
 				<?= Html::submitButton('Login', ['class' =>'btn btn-default','id'=>'']) ?>
 			</div>
@@ -137,54 +134,36 @@
                 </select>
 			</div>
 			<div class="owner box">
-				<div class="form-group">
-					<?= $form->field($model, 'gym_name')->textInput(['placeholder' => "Gym Name"])->label('Gycm Name')?>
-				</div>
-				<div class="form-group">
-					<?= $form->field($model, 'owner_name')->textInput(['placeholder' => "Owner Name"])->label('Owner Name') ?>
-				</div>
-				<div class="form-group">
-					<?= $form->field($model, 'mobile_no')->textInput(['placeholder' => "Mobile No."])->label('Mobile No.')?>
+				
+				<?= $form->field($model, 'gym_name')->textInput(['placeholder' => "Gym Name"])->label('Gym Name')?>
+				
+				<?= $form->field($model, 'owner_name')->textInput(['placeholder' => "Owner Name"])->label('Owner Name') ?>
+				
+				<?= $form->field($model, 'mobile_no')->textInput(['placeholder' => "Mobile No."])->label('Mobile No.')?>
 
-				</div>
-				<div class="form-group">
-					 <?= $form->field($model, 'email')->textInput(['placeholder' => "Email"])->label('Email') ?>
+				<?= $form->field($model, 'email')->textInput(['placeholder' => "Email"])->label('Email') ?>
+				
+				<?= $form->field($model, 'username')->textInput(['placeholder' => "Username"])->label('Username')?>
 
-				</div>
-				<div class="form-group">
-					<?= $form->field($model, 'username')->textInput(['placeholder' => "Username"])->label('Username')?>
+				<?= $form->field($model, 'password')->textInput(['placeholder' => "Password"])->label('Password') ?>
+				
+				<?= $form->field($model, 'address')->textArea(['placeholder' => 'Address', 'name' => 'Address'])->label('Address'); ?>
 
-				</div>
-				<div class="form-group">
-					        <?= $form->field($model, 'password')->textInput(['placeholder' => "Password"])->label('*********') ?>
+				<?= $form->field($model, 'pincode')->textInput(['placeholder' => "Pin Code"])->label('Pin Code') ?>
 
-				</div>
-				<div class="form-group">
-					        <?= $form->field($model, 'address')->textArea(['placeholder' => 'Address', 'name' => 'Address'])->label(false); ?>
+		        <?= $form->field($model, 'city')->textInput(['placeholder' => "City"])->label('City')?>
 
-				</div>
-				<div class="form-group">
-						<?= $form->field($model, 'pincode')->textInput(['placeholder' => "Pin Code"])->label('Pin Code') ?>
-      
-				</div>
-				<div class="form-group">
-					  <?= $form->field($model, 'city')->textInput(['placeholder' => "City"])->label('City')?>
-        
-				</div>
-				<div class="form-group">
-					<?= $form->field($model, 'state')->textInput(['placeholder' => "State"])->label('State') ?>
-				</div>
-				<div class="form-group">
-					        <?= $form->field($model, 'country')->textInput(['placeholder' => "Country"])->label('Country') ?>
+				<?= $form->field($model, 'state')->textInput(['placeholder' => "State"])->label('State') ?>
 
-				</div>
+				<?= $form->field($model, 'country')->textInput(['placeholder' => "Country"])->label('Country') ?>
+
 		    </div>
 		    
 			
 			<div class="form-group">
-<?= Html::submitButton('Register', ['class' =>'btn btn-default','id'=>'']) ?>
+				<?= Html::submitButton('Register', ['class' =>'btn btn-default','id'=>'']) ?>
 			</div>
-<?php ActiveForm::end();?>
+				<?php ActiveForm::end();?>
 	  </div>
 	</div>
   </div>
