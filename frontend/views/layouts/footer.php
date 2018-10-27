@@ -124,7 +124,9 @@
 	  <?php 
 		$model = new MgpOwners();
 				$form = ActiveForm::begin([
-				'options' => ['class' => 'form-horizontal mygym-modal','id' => 'register'],
+				// 'enableAjaxValidation' => true,
+				'id' => 'register',
+				'options' => ['class' => 'form-horizontal mygym-modal'],
 				'action'=>'	site/register'
 			]);
       ?>
@@ -156,11 +158,11 @@
 
 				</div>
 				<div class="form-group">
-					        <?= $form->field($model, 'password')->textInput(['placeholder' => "Password"])->label('*********') ?>
+					        <?= $form->field($model, 'password')->textInput(['placeholder' => "*********"])->label('Password') ?>
 
 				</div>
 				<div class="form-group">
-					        <?= $form->field($model, 'address')->textArea(['placeholder' => 'Address', 'name' => 'Address'])->label(false); ?>
+					        <?= $form->field($model, 'address')->textInput(['placeholder' => 'Address'])->label('Address'); ?>
 
 				</div>
 				<div class="form-group">

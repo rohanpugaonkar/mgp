@@ -191,26 +191,15 @@ class SiteController extends Controller
 	public function actionRegister(){
 		
 		$request['MgpOwners'] = Yii::$app->request->post();
-		echo "<pre/>";
-		// print_r($request);die;
-         $model = new MgpOwners();
+        $model = new MgpOwners();
         if ($model->load($request['MgpOwners'])) {
-			 $model->save(false);
+			 $model->save();
+		}else {
+			// HERE YOU CAN PRINT THE ERRORS OF MODEL
+			$data = $model->getErrors();
+			print_r($data);
+			// Yii::$app->session->setFlash('message', $data['email'][0]);// its dislplays error msg on your form
 		}
-		       // $model = new MgpOwners();
-		
-		 // if ($model->load(Yii::$app->request->post())) {
-
-           // return $this->goBack();
-       // } else {
-
-           // $model->password = '';
-
-           // return $this->render('register', [
-               // 'model' => $model,
-           // ]);
-       // }
-		
 	}
 
     /**
