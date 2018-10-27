@@ -3,6 +3,8 @@ namespace common\models;
 
 use Yii;
 use yii\base\Model;
+use frontend\models\MgpOwners;
+
 
 /**
  * Login form
@@ -14,6 +16,11 @@ class LoginForm extends Model
     public $rememberMe = true;
 
     private $_user;
+
+    public static function tableName()
+       {
+           return 'mgp_owners';
+       }
 
 
     /**
@@ -69,8 +76,9 @@ class LoginForm extends Model
      */
     protected function getUser()
     {
+
         if ($this->_user === null) {
-            $this->_user = User::findByUsername($this->username);
+            $this->_user =  MgpOwners::findByUsername($this->username);
         }
 
         return $this->_user;

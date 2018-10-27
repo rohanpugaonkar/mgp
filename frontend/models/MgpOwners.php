@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace frontend\models;
 
 use Yii;
 
@@ -27,6 +27,7 @@ use Yii;
  */
 class MgpOwners extends \yii\db\ActiveRecord
 {
+    const STATUS_ACTIVE = 1;
     /**
      * {@inheritdoc}
      */
@@ -75,4 +76,20 @@ class MgpOwners extends \yii\db\ActiveRecord
             'updated_by' => 'Updated By',
         ];
     }
+
+    /**
+     * Finds user by username
+     *
+     * @param string $username
+     * @return static|null
+     */
+    public static function findByUsername($username)
+    {
+        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+    }
+    public function validatePassword($password)
+    {
+        return Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
 }

@@ -2,6 +2,7 @@
  use yii\helpers\Html;
  use yii\bootstrap\Modal;
  use yii\widgets\ActiveForm;
+ use common\models\LoginForm;
  ?>
 <div class="footer">
 	<div class="container">
@@ -65,6 +66,9 @@
 
 <!-- Login Modal -->
 
+
+
+   
 <div id="login" class="modal fade mygym-modal" role="dialog">
   <div class="modal-dialog modal-md">
 	<!-- Modal content-->
@@ -74,25 +78,36 @@
 		<h4 class="modal-title text-center">Login</h4>
 	  </div>
 	  <div class="modal-body">
-		<form role="form">
+		<!-- <form role="form"> -->
+		<?php 
+			$model = new LoginForm();
+		    $form = ActiveForm::begin([
+		        'options' => ['class' => 'form-horizontal mygym-modal','id' => 'login'],
+		        'action'=>'login'
+		    ]);
+		?>
 			<div class="form-group">
-				<label class="control-label">Username</label>
-				<input type="text" class="form-control" placeholder="Username" required/>
+				<!-- <label class="control-label">Username</label>
+				<input type="text" class="form-control" placeholder="Username" required/> -->
+				<?= $form->field($model, 'username')->textInput(['placeholder' => "Username"])->label('Username')?>
 			</div>
 			<div class="form-group">
-				<label class="control-label">Password</label>
-				<input type="password" class="form-control" placeholder="*********" required/>
+				<!-- <label class="control-label">Password</label>
+				<input type="password" class="form-control" placeholder="*********" required/> -->
+				<?= $form->field($model, 'password')->textInput(['placeholder' => "*********"])->label('Password') ?>
 			</div>
 			<div class="form-group">
-				<a href="" class="btn btn-default">Login</a>
+				<?= Html::submitButton('Login', ['class' =>'btn btn-default','id'=>'']) ?>
 			</div>
-		</form>
+		<!-- </form> -->
+		<?php 
+		 		ActiveForm::end();
+		 ?>
 	  </div>
 	</div>
 
   </div>
 </div>
-
 
 <!-- register Modal -->
 <div id="register" class="modal fade mygym-modal" role="dialog">

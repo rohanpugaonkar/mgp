@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ]);
         $form = ActiveForm::begin([
         'options' => ['class' => 'form-horizontal mygym-modal','id' => 'login'],
-        'action'=>''
+        'action'=>'site/login'
     ]);
     ?>
 
