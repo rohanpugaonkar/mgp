@@ -2,6 +2,8 @@
  use yii\helpers\Html;
  use yii\bootstrap\Modal;
  use yii\widgets\ActiveForm;
+  use frontend\models\MgpOwners;
+
  ?>
 <div class="footer">
 	<div class="container">
@@ -104,7 +106,13 @@
 		<h4 class="modal-title text-center">Register Here</h4>
 	  </div>
 	  <div class="modal-body">
-		<form role="form">
+	  <?php 
+		$model = new MgpOwners();
+				$form = ActiveForm::begin([
+				'options' => ['class' => 'form-horizontal mygym-modal','id' => 'register'],
+				'action'=>'	site/register'
+			]);
+      ?>
 			<div class="form-group">
 				<label class="control-label">Select Role</label>
 				<select class="form-control" id="userrole">
@@ -115,102 +123,53 @@
 			</div>
 			<div class="owner box">
 				<div class="form-group">
-					<label class="control-label">Gym Name</label>
-					<input type="text" class="form-control" placeholder="Gym Name" required/>
+					<?= $form->field($model, 'gym_name')->textInput(['placeholder' => "Gym Name"])->label('Gycm Name')?>
 				</div>
 				<div class="form-group">
-					<label class="control-label">Owner Name</label>
-					<input type="text" class="form-control" placeholder="Owner Name" required/>
+					<?= $form->field($model, 'owner_name')->textInput(['placeholder' => "Owner Name"])->label('Owner Name') ?>
 				</div>
 				<div class="form-group">
-					<label class="control-label">Mobile No.</label>
-					<input type="text" class="form-control" placeholder="Mobile No." required/>
+					<?= $form->field($model, 'mobile_no')->textInput(['placeholder' => "Mobile No."])->label('Mobile No.')?>
+
 				</div>
 				<div class="form-group">
-					<label class="control-label">Email</label>
-					<input type="email" class="form-control" placeholder="Email" required/>
+					 <?= $form->field($model, 'email')->textInput(['placeholder' => "Email"])->label('Email') ?>
+
 				</div>
 				<div class="form-group">
-					<label class="control-label">Username</label>
-					<input type="text" class="form-control" placeholder="Username" required/>
+					<?= $form->field($model, 'username')->textInput(['placeholder' => "Username"])->label('Username')?>
+
 				</div>
 				<div class="form-group">
-					<label class="control-label">Password</label>
-					<input type="password" class="form-control" placeholder="*********" required/>
+					        <?= $form->field($model, 'password')->textInput(['placeholder' => "Password"])->label('*********') ?>
+
 				</div>
 				<div class="form-group">
-					<label class="control-label">Address</label>
-					<textarea class="form-control" rows="3" placeholder="Address" required></textarea>
+					        <?= $form->field($model, 'address')->textArea(['placeholder' => 'Address', 'name' => 'Address'])->label(false); ?>
+
 				</div>
 				<div class="form-group">
-					<label class="control-label">Pin Code</label>
-					<input type="text" class="form-control" placeholder="Pin Code" required/>
+						<?= $form->field($model, 'pincode')->textInput(['placeholder' => "Pin Code"])->label('Pin Code') ?>
+      
 				</div>
 				<div class="form-group">
-					<label class="control-label">City</label>
-					<input type="text" class="form-control" placeholder="City" required/>
+					  <?= $form->field($model, 'city')->textInput(['placeholder' => "City"])->label('City')?>
+        
 				</div>
 				<div class="form-group">
-					<label class="control-label">State</label>
-					<input type="text" class="form-control" placeholder="State" required/>
+					<?= $form->field($model, 'state')->textInput(['placeholder' => "State"])->label('State') ?>
 				</div>
 				<div class="form-group">
-					<label class="control-label">Country</label>
-					<input type="text" class="form-control" placeholder="Country" required/>
+					        <?= $form->field($model, 'country')->textInput(['placeholder' => "Country"])->label('Country') ?>
+
 				</div>
 		    </div>
-		    <div class="member box">
-				<div class="form-group">
-					<label class="control-label">Member Name</label>
-					<input type="text" class="form-control" placeholder="Member Name" required/>
-				</div>
-				<div class="form-group">
-					<label class="control-label">Mobile No.</label>
-					<input type="text" class="form-control" placeholder="Mobile No." required/>
-				</div>
-				<div class="form-group">
-					<label class="control-label">Email</label>
-					<input type="email" class="form-control" placeholder="Email" required/>
-				</div>
-				<div class="form-group">
-					<label class="control-label">Username</label>
-					<input type="text" class="form-control" placeholder="Username" required/>
-				</div>
-				<div class="form-group">
-					<label class="control-label">Password</label>
-					<input type="password" class="form-control" placeholder="*********" required/>
-				</div>
-				<div class="form-group">
-					<label class="control-label">Address</label>
-					<textarea class="form-control" rows="3" placeholder="Address" required></textarea>
-				</div>
-				<div class="form-group">
-					<label class="control-label">Pin Code</label>
-					<input type="text" class="form-control" placeholder="Pin Code" required/>
-				</div>
-				<div class="form-group">
-					<label class="control-label">City</label>
-					<input type="text" class="form-control" placeholder="City" required/>
-				</div>
-				<div class="form-group">
-					<label class="control-label">State</label>
-					<input type="text" class="form-control" placeholder="State" required/>
-				</div>
-				<div class="form-group">
-					<label class="control-label">Country</label>
-					<input type="text" class="form-control" placeholder="Country" required/>
-				</div>
-				<label class="control-label">Select You Gym</label>
-				<select class="form-control" id="userrole">
-                    <option>Select Your Gym</option>
-                    <option value="">gym1</option>
-                    <option value="">gym2</option>
-                </select>
-		    </div>
+		    
+			
 			<div class="form-group">
-				<a href="" class="btn btn-default">Register</a>
+<?= Html::submitButton('Register', ['class' =>'btn btn-default','id'=>'']) ?>
 			</div>
-		</form>
+<?php ActiveForm::end();?>
 	  </div>
 	</div>
   </div>
