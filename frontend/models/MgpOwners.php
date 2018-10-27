@@ -43,7 +43,7 @@ class MgpOwners extends \yii\db\ActiveRecord
     {
         return [
             [['gym_name', 'owner_name', 'mobile_no', 'email', 'username', 'password', 'address', 'pincode', 'city', 'state', 'country', 'status', 'created_at', 'created_by', 'updated_by'], 'required'],
-            [['mobile_no', 'pincode', 'city', 'state', 'country', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['mobile_no', 'pincode', 'status', 'created_by', 'updated_by'], 'integer'],
             [['address'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['gym_name', 'owner_name', 'username', 'password'], 'string', 'max' => 50],

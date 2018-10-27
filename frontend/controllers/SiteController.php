@@ -12,6 +12,7 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use frontend\models\MgpOwners;
 
 /**
  * Site controller
@@ -186,6 +187,31 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+	
+	public function actionRegister(){
+		
+		$request['MgpOwners'] = Yii::$app->request->post();
+		echo "<pre/>";
+		// print_r($request);die;
+         $model = new MgpOwners();
+        if ($model->load($request['MgpOwners'])) {
+			 $model->save(false);
+		}
+		       // $model = new MgpOwners();
+		
+		 // if ($model->load(Yii::$app->request->post())) {
+
+           // return $this->goBack();
+       // } else {
+
+           // $model->password = '';
+
+           // return $this->render('register', [
+               // 'model' => $model,
+           // ]);
+       // }
+		
+	}
 
     /**
      * Requests password reset.
