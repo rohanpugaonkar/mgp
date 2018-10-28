@@ -1,7 +1,12 @@
 <?php
-
-
 namespace frontend\controllers;
+
+use Yii;
+use yii\base\InvalidArgumentException;
+use yii\web\BadRequestHttpException;
+use yii\web\Controller;
+use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use common\models\LoginForm;
 
 
@@ -11,8 +16,13 @@ class DashboardController extends \yii\web\Controller
     public function actionIndex()
 
     {
-    	$this->layout = 'dashboard';
-        return $this->render('index');
+		$user = Yii::$app->user->identity;
+		if($user){
+			$this->layout = 'dashboard';
+			return $this->render('index');
+		}
+		return $this->goHome();
+
     }
     public function actionChangepassword()
     {

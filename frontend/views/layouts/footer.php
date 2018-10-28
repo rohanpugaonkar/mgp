@@ -85,7 +85,7 @@
 			$model = new LoginForm();
 		    $form = ActiveForm::begin([
 		        'options' => ['class' => 'form-horizontal','id' => 'login'],
-		        'action'=>'login'
+		        'action'=>'site/login'
 		    ]);
 		?>
 			

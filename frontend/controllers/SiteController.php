@@ -103,23 +103,20 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        // echo 'qewrtey';die;
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
+        // if (!Yii::$app->user->isGuest) {
+            // return $this->goHome();
+        // }
+		
+		$request = Yii::$app->request->post();
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-           
-            return $this->goBack();
-        } else {
-           
-            $model->password = '';
+        if ($model->load($request) && $model->login()) {
+			$user = Yii::$app->user->identity;
+			  return $this->redirect(['dashboard/index']);
 
-            return $this->render('login', [
-                'model' => $model,
-            ]);
-        }
+		}else{
+			$data = $model->getErrors();
+			return $this->goBack();
+		}
     }
 
     /**
@@ -197,7 +194,10 @@ class SiteController extends Controller
 			$model->status = '0';
 			$model->address = isset($request['address'])?$request['address']:'';
         if ($model->load($request)&& $model->validate()) {
-			$model->save();	
+			// $model->password = md5(sha1($model->password));
+			$model->password = $model->setPassword($model->password);
+			//$model->generateAuthKey();
+			$model->save();
 			Yii::$app->session->setFlash('success', 'Your account has been successfully registered ! ');
 			return $this->goHome();
 
