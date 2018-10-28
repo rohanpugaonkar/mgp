@@ -43,9 +43,12 @@ class MgpOwners extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['gym_name', 'owner_name', 'mobile_no', 'email', 'username', 'password', 'address', 'pincode', 'city', 'state', 'country', 'status', 'created_at', 'created_by', 'updated_by'], 'required'],
-            [['mobile_no', 'pincode', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['gym_name', 'owner_name', 'mobile_no', 'email', 'username', 'password', 'address', 'pincode', 'city', 'state', 'country', 'status', 'created_at', 'created_by'], 'required'],
+            [['mobile_no', 'pincode', 'status'], 'integer'],
             [['address'], 'string'],
+			[['mobile_no'], 'string','min'=> 10, 'max' => 12,'tooLong'=>"Mobile must be atleast 10 characters long"],
+			['email','email'],
+            [['email'],'unique', 'message'=> 'Email already exist', 'targetClass' => '\frontend\models\MgpOwners'],
             [['created_at', 'updated_at'], 'safe'],
             [['gym_name', 'owner_name', 'username', 'password'], 'string', 'max' => 50],
             [['email'], 'string', 'max' => 256],
@@ -92,6 +95,21 @@ class MgpOwners extends \yii\db\ActiveRecord
     public function validatePassword($password)
     {   
         return Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+	
+	public static function findByEmail($email)
+    {
+        $exists = self::find()->where(['member_email' => $email])->exists();
+        if(empty($exists)){ //if user does not exist in tblmembers then check in tbltempmembers
+            $tmpexists = MgpOwners::find()->where(['member_email' => $email])->exists();
+            if($tmpexists){ //registered email but not verified
+                return false;
+            }
+            else{ //unregistered email
+                return true;
+            }
+        }
+        return self::findOne(['member_email' => $email]);
     }
 
      /**

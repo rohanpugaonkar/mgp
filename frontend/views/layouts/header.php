@@ -4,6 +4,7 @@ use yii\helpers\Url;
 ?>
 
 <header>
+
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 	  <div class="container">
 		<div class="navbar-header">
@@ -35,4 +36,19 @@ use yii\helpers\Url;
 		</div>
 	  </div>
 	</nav>
+	<?php if (Yii::$app->session->hasFlash('success')): ?>
+    <div class="alert alert-success alert-dismissable">
+    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+    <h4><i class="icon fa fa-check"></i>Saved!</h4>
+    <?= Yii::$app->session->getFlash('success') ?>
+    </div>
+<?php endif; ?>
+
+<?php if (Yii::$app->session->hasFlash('error')): ?>
+    <div class="alert alert-error alert-dismissable">
+    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+    <h4><i class="icon fa fa-check"></i>Saved!</h4>
+    <?= Yii::$app->session->getFlash('error') ?>
+    </div>
+<?php endif; ?>
 </header>
