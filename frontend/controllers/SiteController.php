@@ -116,7 +116,9 @@ class SiteController extends Controller
 			  return $this->redirect(['dashboard/index']);
 		}else{
 			$data = $model->getErrors();
-			return $this->goBack();
+            Yii::$app->session->setFlash('error', $data['password'][0]);// its dislplays error msg on your form
+            return $this->goHome();
+			// return $this->goBack();
 		}
     }
 
@@ -190,6 +192,7 @@ class SiteController extends Controller
 		
 		$request = Yii::$app->request->post();
 
+        if(isset($request['MgpOwners'])){
             $model = new MgpOwners();
     		$model->created_at = date('Y-m-d H:i:s');
 			$model->created_by  = 'Self';

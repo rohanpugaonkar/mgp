@@ -102,7 +102,7 @@
 			<?= $form->field($model, 'username')->textInput(['placeholder' => "Username"]); ?>
 			
 			
-			<?= $form->field($model, 'password')->textInput(['placeholder' => "*********"]); ?>
+			<?= $form->field($model, 'password')->passwordInput(['placeholder' => "*********"]); ?>
 			
 			<div class="form-group">
 				<?= Html::submitButton('Login', ['class' =>'btn btn-default','id'=>'']) ?>
@@ -157,7 +157,7 @@
 				
 				<?= $form->field($model, 'username')->textInput(['placeholder' => "Username"])->label('Username')?>
 
-				<?= $form->field($model, 'password')->textInput(['placeholder' => "Password"])->label('Password') ?>
+				<?= $form->field($model, 'password')->passwordInput(['placeholder' => "Password"])->label('Password') ?>
 				
 				<?= $form->field($model, 'address')->textInput(['placeholder' => 'Address'])->label('Address'); ?>
 
@@ -198,7 +198,7 @@
 				
 				<?= $form->field($member_model, 'username')->textInput(['placeholder' => "Username"])->label('Username')?>
 
-				<?= $form->field($member_model, 'password')->textInput(['placeholder' => "Password"])->label('Password') ?>
+				<?= $form->field($member_model, 'password')->passwordInput(['placeholder' => "Password"])->label('Password') ?>
 				
 				<?= $form->field($member_model, 'address')->textInput(['placeholder' => 'Address'])->label('Address'); ?>
 
