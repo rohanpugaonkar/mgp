@@ -190,15 +190,23 @@ class SiteController extends Controller
 	
 	public function actionRegister(){
 		
-		$request['MgpOwners'] = Yii::$app->request->post();
+		$request = Yii::$app->request->post();
         $model = new MgpOwners();
-        if ($model->load($request['MgpOwners'])) {
-			 $model->save();
+		$model->created_at = date('Y-m-d H:i:s');
+			$model->created_by  = 'Self';
+			$model->status = '0';
+			$model->address = isset($request['address'])?$request['address']:'';
+        if ($model->load($request)&& $model->validate()) {
+			$model->save();	
+			Yii::$app->session->setFlash('success', 'Your account has been successfully registered ! ');
+			return $this->goHome();
+
 		}else {
 			// HERE YOU CAN PRINT THE ERRORS OF MODEL
 			$data = $model->getErrors();
-			print_r($data);
-			// Yii::$app->session->setFlash('message', $data['email'][0]);// its dislplays error msg on your form
+			// print_r($data);
+			Yii::$app->session->setFlash('error', $data['email'][0]);// its dislplays error msg on your form
+			return $this->goHome();
 		}
 	}
 

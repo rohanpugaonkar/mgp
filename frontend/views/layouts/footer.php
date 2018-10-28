@@ -149,7 +149,7 @@
 
 				<?= $form->field($model, 'password')->textInput(['placeholder' => "Password"])->label('Password') ?>
 				
-				<?= $form->field($model, 'address')->textArea(['placeholder' => 'Address', 'name' => 'Address'])->label('Address'); ?>
+				<?= $form->field($model, 'address')->textInput(['placeholder' => 'Address', 'name' => 'address'])->label('Address'); ?>
 
 				<?= $form->field($model, 'pincode')->textInput(['placeholder' => "Pin Code"])->label('Pin Code') ?>
 

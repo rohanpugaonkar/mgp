@@ -42,8 +42,8 @@ class MgpOwners extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['gym_name', 'owner_name', 'mobile_no', 'email', 'username', 'password', 'address', 'pincode', 'city', 'state', 'country', 'status', 'created_at', 'created_by', 'updated_by'], 'required'],
-            [['mobile_no', 'pincode', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['gym_name', 'owner_name', 'mobile_no', 'email', 'username', 'password', 'address', 'pincode', 'city', 'state', 'country', 'status', 'created_at', 'created_by'], 'required'],
+            [['mobile_no', 'pincode', 'status'], 'integer'],
             [['address'], 'string'],
 			[['mobile_no'], 'string','min'=> 10, 'max' => 12,'tooLong'=>"Mobile must be atleast 10 characters long"],
 			['email','email'],
