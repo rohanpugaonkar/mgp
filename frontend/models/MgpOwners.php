@@ -28,6 +28,7 @@ use Yii;
 class MgpOwners extends \yii\db\ActiveRecord
 {
     const STATUS_ACTIVE = 1;
+    public $password_hash = '111';
     /**
      * {@inheritdoc}
      */
@@ -87,9 +88,20 @@ class MgpOwners extends \yii\db\ActiveRecord
     {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
+
     public function validatePassword($password)
-    {
+    {   
         return Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
+     /**
+     * Generates password hash from password and sets it to the model
+     *
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     }
 
 }

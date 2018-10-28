@@ -3,7 +3,8 @@
  use yii\bootstrap\Modal;
  use yii\widgets\ActiveForm;
  use common\models\LoginForm;
-  use frontend\models\MgpOwners;
+ use frontend\models\MgpOwners;
+ use yii\helpers\Url;
 
  ?>
 <div class="footer">
@@ -85,7 +86,7 @@
 			$model = new LoginForm();
 		    $form = ActiveForm::begin([
 		        'options' => ['class' => 'form-horizontal','id' => 'login'],
-		        'action'=>'login'
+		        'action'=> Url::base(true).'/site/login'
 		    ]);
 		?>
 			

@@ -80,7 +80,7 @@ class LoginForm extends Model
         if ($this->_user === null) {
             $this->_user =  MgpOwners::findByUsername($this->username);
         }
-
+        
         return $this->_user;
     }
 }
