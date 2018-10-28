@@ -19,7 +19,8 @@ use yii\helpers\Url;
           <li class="dropdown user user-menu">
              <a href="<?= Url::to('')?>" class="dropdown-toggle" data-toggle="dropdown">
               <?= Html::img('@web/dist/img/user2-160x160.jpg', ['alt' => 'User Image', 'class' => 'user-image']);?>
-              <span class="hidden-xs">Log Out</span>
+              <span class="hidden-xs"><?= Html::a('Logout', ['site/logout'], ['data' => ['method' => 'post']]) ?>
+</span>
             </a>
           </li>
         </ul>

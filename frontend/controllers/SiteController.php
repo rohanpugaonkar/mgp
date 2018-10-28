@@ -105,23 +105,19 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        // echo 'qewrtey';die;
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
+        // if (!Yii::$app->user->isGuest) {
+            // return $this->goHome();
+        // }
+		
+		$request = Yii::$app->request->post();
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-           
-            return $this->goBack();
-        } else {
-           
-            $model->password = '';
-
-            return $this->render('dashboard', [
-                'model' => $model,
-            ]);
-        }
+        if ($model->load($request) && $model->login()) {
+			$user = Yii::$app->user->identity;
+			  return $this->redirect(['dashboard/index']);
+		}else{
+			$data = $model->getErrors();
+			return $this->goBack();
+		}
     }
 
     /**
@@ -194,18 +190,19 @@ class SiteController extends Controller
 		
 		$request = Yii::$app->request->post();
 
-        // echo '<pre>'.print_r($request,true);die;
-        if(isset($request['MgpOwners'])){
-            
             $model = new MgpOwners();
     		$model->created_at = date('Y-m-d H:i:s');
-    			$model->created_by  = 'Self';
-                $model->status = 1;
-    			$model->updated_by = 1;
-    			$model->address = isset($request['address'])?$request['address']:'';
+			$model->created_by  = 'Self';
+			$model->status = 1;
+            $model->updated_by = 1;
+			$model->address = isset($request['address'])?$request['address']:'';
+
             if ($model->load($request)&& $model->validate()) {
-    			$model->save();	
-    			Yii::$app->session->setFlash('success', 'Your account has been successfully registered. Please verify with OTP . ');
+    			// $model->password = md5(sha1($model->password));
+    			$model->password = $model->setPassword($model->password);
+    			//$model->generateAuthKey();
+    			$model->save();
+    			Yii::$app->session->setFlash('success', 'Your account has been successfully registered . Please verify with OTP . ');
     			return $this->goHome();
 
     		}else {
