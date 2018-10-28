@@ -37,18 +37,29 @@ use yii\helpers\Url;
 	  </div>
 	</nav>
 	<?php if (Yii::$app->session->hasFlash('success')): ?>
-    <div class="alert alert-success alert-dismissable">
+    <div class="alert alert-success alert-dismissable" style="margin-top:100px;">
     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-    <h4><i class="icon fa fa-check"></i>Saved!</h4>
+    <h4><i class="icon fa fa-check"></i>Thank You</h4>
     <?= Yii::$app->session->getFlash('success') ?>
     </div>
 <?php endif; ?>
 
 <?php if (Yii::$app->session->hasFlash('error')): ?>
-    <div class="alert alert-error alert-dismissable">
+    <div class="alert alert-error alert-dismissable" style="margin-top:100px;">
     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-    <h4><i class="icon fa fa-check"></i>Saved!</h4>
+    <h4><i class="icon fa fa-check"></i>Sorry!</h4>
     <?= Yii::$app->session->getFlash('error') ?>
     </div>
 <?php endif; ?>
+
+
 </header>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+	$(document).ready(function(){
+
+			
+	});
+</script>
+

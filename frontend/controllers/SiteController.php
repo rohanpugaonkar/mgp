@@ -8,11 +8,13 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
+ use frontend\models\MgpCities;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use frontend\models\MgpOwners;
+use frontend\models\MgpMembers;
 
 /**
  * Site controller
@@ -191,24 +193,73 @@ class SiteController extends Controller
 	public function actionRegister(){
 		
 		$request = Yii::$app->request->post();
-        $model = new MgpOwners();
-		$model->created_at = date('Y-m-d H:i:s');
-			$model->created_by  = 'Self';
-			$model->status = '0';
-			$model->address = isset($request['address'])?$request['address']:'';
-        if ($model->load($request)&& $model->validate()) {
-			$model->save();	
-			Yii::$app->session->setFlash('success', 'Your account has been successfully registered ! ');
-			return $this->goHome();
 
-		}else {
-			// HERE YOU CAN PRINT THE ERRORS OF MODEL
-			$data = $model->getErrors();
-			// print_r($data);
-			Yii::$app->session->setFlash('error', $data['email'][0]);// its dislplays error msg on your form
-			return $this->goHome();
-		}
+        // echo '<pre>'.print_r($request,true);die;
+        if(isset($request['MgpOwners'])){
+            
+            $model = new MgpOwners();
+    		$model->created_at = date('Y-m-d H:i:s');
+    			$model->created_by  = 'Self';
+                $model->status = 1;
+    			$model->updated_by = 1;
+    			$model->address = isset($request['address'])?$request['address']:'';
+            if ($model->load($request)&& $model->validate()) {
+    			$model->save();	
+    			Yii::$app->session->setFlash('success', 'Your account has been successfully registered. Please verify with OTP . ');
+    			return $this->goHome();
+
+    		}else {
+    			// HERE YOU CAN PRINT THE ERRORS OF MODEL
+    			$data = $model->getErrors();
+    			// print_r($data);
+    			Yii::$app->session->setFlash('error', $data['email'][0]);// its dislplays error msg on your form
+    			return $this->goHome();
+    		}
+
+         }else{     //member registration
+
+            $model = new MgpMembers();
+            $model->created_at = date('Y-m-d H:i:s');
+                $model->created_by  = 1;
+                $model->updated_by = 1;
+                $model->status = 1;
+                $model->address = isset($request['address'])?$request['address']:'';
+            if ($model->load($request)&& $model->validate()) {
+                $model->save(); 
+                Yii::$app->session->setFlash('success', 'Your account has been successfully registered. Please verify with OTP . ');
+                return $this->goHome();
+
+            }else {
+                // HERE YOU CAN PRINT THE ERRORS OF MODEL
+                $data = $model->getErrors();
+                // print_r($data);die;
+                Yii::$app->session->setFlash('error', $data['email'][0]);// its dislplays error msg on your form
+                return $this->goHome();
+            }
+         }      
 	}
+
+
+    public function actionGetStateCities()
+    {
+        $model = new MgpCities();
+        $state_id = Yii::$app->request->post('state_id');
+
+        $city_data = $model::find()->where(['state_id'=>$state_id])->all();
+        // echo '<pre>'.print_r($city_data);die;
+        if(!empty($city_data))
+        {
+            $options = '<option value="">Select City</option>';
+            foreach($city_data as $oneCity)
+            {
+                $options .= '<option value="'.$oneCity['city_id'].'">'.$oneCity['city_name'].'</option>';
+            }
+        }else{
+            $options = '';
+        }
+        return $options;
+
+    }
 
     /**
      * Requests password reset.

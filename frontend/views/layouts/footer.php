@@ -4,7 +4,13 @@
  use yii\widgets\ActiveForm;
  use common\models\LoginForm;
  use frontend\models\MgpOwners;
+ use frontend\models\MgpCountries;
+ use frontend\models\MgpStates;
+ use frontend\models\MgpCities;
+ use frontend\models\MgpMembers;
  use yii\helpers\Url;
+ use yii\helpers\ArrayHelper;
+
 
  ?>
 <div class="footer">
@@ -119,15 +125,7 @@
 		<h4 class="modal-title text-center">Register Here</h4>
 	  </div>
 	  <div class="modal-body">
-	  <?php 
-		$model = new MgpOwners();
-				$form = ActiveForm::begin([
-				// 'enableAjaxValidation' => true,
-				'id' => 'register',
-				'options' => ['class' => 'form-horizontal mygym-modal'],
-				'action'=>'	site/register'
-			]);
-      ?>
+	  
 			<div class="form-group">
 				<label class="control-label">Select Role</label>
 				<select class="form-control" id="userrole">
@@ -137,7 +135,16 @@
                 </select>
 			</div>
 			<div class="owner box">
-				
+			<?php 
+				$model = new MgpOwners();
+				$member_model = new MgpMembers();
+						$form = ActiveForm::begin([
+						// 'enableAjaxValidation' => true,
+						'id' => 'register_owner',
+						'options' => ['class' => 'form-horizontal mygym-modal'],
+						'action'=> Url::base(true).'/site/register'
+					]);
+		      ?>			
 				<?= $form->field($model, 'gym_name')->textInput(['placeholder' => "Gym Name"])->label('Gym Name')?>
 				
 				<?= $form->field($model, 'owner_name')->textInput(['placeholder' => "Owner Name"])->label('Owner Name') ?>
@@ -150,24 +157,114 @@
 
 				<?= $form->field($model, 'password')->textInput(['placeholder' => "Password"])->label('Password') ?>
 				
-				<?= $form->field($model, 'address')->textInput(['placeholder' => 'Address', 'name' => 'address'])->label('Address'); ?>
+				<?= $form->field($model, 'address')->textInput(['placeholder' => 'Address'])->label('Address'); ?>
 
 				<?= $form->field($model, 'pincode')->textInput(['placeholder' => "Pin Code"])->label('Pin Code') ?>
 
-		        <?= $form->field($model, 'city')->textInput(['placeholder' => "City"])->label('City')?>
+		        <?= $form->field($model, 'state')->dropDownList(
+			            ArrayHelper::map(MgpStates::find()->where(['status'=>1])->all(),'id','state_name'),
+			            ['prompt'=>'Select State','id'=>'owner_state',]
+			       )->label('State') ?>
 
-				<?= $form->field($model, 'state')->textInput(['placeholder' => "State"])->label('State') ?>
+			    <?= $form->field($model, 'city')->dropDownList(array(),['prompt'=>'Select City','id'=>'owner_city']) ?>   
+				
+				<?= $form->field($model, 'country')->dropDownList(
+			            ArrayHelper::map(MgpCountries::find()->where(['status'=>1])->all(),'id','country_name'),
+			            ['prompt'=>'Select Country']
+			       )->label('Country') ?>
 
-				<?= $form->field($model, 'country')->textInput(['placeholder' => "Country"])->label('Country') ?>
 
+				<?= Html::submitButton('Register', ['class' =>'btn btn-default','id'=>'']) ?>
+				<?php ActiveForm::end();?>
+		    </div>
+
+		    <div class="member box">
+				<?php
+					$member_model = new MgpMembers();
+							$form = ActiveForm::begin([
+							// 'enableAjaxValidation' => true,
+							'id' => 'register_member',
+							'options' => ['class' => 'form-horizontal mygym-modal'],
+							'action'=> Url::base(true).'/site/register'
+						]);
+			      ?>
+				<?= $form->field($member_model, 'member_name')->textInput(['placeholder' => "Member Name"])->label('Member Name') ?>
+				
+				<?= $form->field($member_model, 'mobile_no')->textInput(['placeholder' => "Mobile No."])->label('Mobile No.')?>
+
+				<?= $form->field($member_model, 'email')->textInput(['placeholder' => "Email"])->label('Email') ?>
+				
+				<?= $form->field($member_model, 'username')->textInput(['placeholder' => "Username"])->label('Username')?>
+
+				<?= $form->field($member_model, 'password')->textInput(['placeholder' => "Password"])->label('Password') ?>
+				
+				<?= $form->field($member_model, 'address')->textInput(['placeholder' => 'Address'])->label('Address'); ?>
+
+				<?= $form->field($member_model, 'pincode')->textInput(['placeholder' => "Pin Code"])->label('Pin Code') ?>
+
+		        
+
+				<?= $form->field($member_model, 'state')->dropDownList(
+			            ArrayHelper::map(MgpStates::find()->where(['status'=>1])->all(),'id','state_name'),
+			            ['prompt'=>'Select State','id'=>'member_state']
+			       )->label('State') ?>
+
+			    <?= $form->field($member_model, 'city')->dropDownList(array(),['prompt'=>'Select Option','id'=>'member_city']) ?>   
+				
+				<?= $form->field($member_model, 'country')->dropDownList(
+			            ArrayHelper::map(MgpCountries::find()->where(['status'=>1])->all(),'id','country_name'),
+			            ['prompt'=>'Select Country']
+			       )->label('Country') ?>	
+
+				<?= $form->field($member_model, 'gym_owner_id')->dropDownList(
+			            ArrayHelper::map(MgpOwners::find()->all(),'id','gym_name'),
+			            ['prompt'=>'Select Gym']
+			       )->label('Gym') ?>
+			    <?= Html::submitButton('Register', ['class' =>'btn btn-default','id'=>'']) ?>
+			    <?php ActiveForm::end();?>
 		    </div>
 		    
 			
 			<div class="form-group">
-				<?= Html::submitButton('Register', ['class' =>'btn btn-default','id'=>'']) ?>
+				
 			</div>
-				<?php ActiveForm::end();?>
+				
 	  </div>
 	</div>
   </div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+	$(document).ready(function(){
+
+			$('#member_state').on('change',function(){
+				var url =   '<?php echo Url::base(true); ?>/site/get-state-cities';
+				var state_id = $(this).val();
+				$.ajax({
+					url: url, 
+					data: {state_id:state_id}, 
+					type: "POST", 
+					success: function(result){
+			    	    $("#member_city").html(result);
+				    }
+				});
+
+			});
+
+			$('#owner_state').on('change',function(){
+				var url =   '<?php echo Url::base(true); ?>/site/get-state-cities';
+				var state_id = $(this).val();
+				$.ajax({
+					url: url, 
+					data: {state_id:state_id}, 
+					type: "POST", 
+					success: function(result){
+			    	    $("#owner_city").html(result);
+				    }
+				});
+
+			});
+	});
+</script>
+

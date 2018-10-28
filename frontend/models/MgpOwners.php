@@ -28,7 +28,6 @@ use Yii;
 class MgpOwners extends \yii\db\ActiveRecord
 {
     const STATUS_ACTIVE = 1;
-    public $password_hash = '111';
     /**
      * {@inheritdoc}
      */
