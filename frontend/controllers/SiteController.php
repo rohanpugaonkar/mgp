@@ -77,6 +77,18 @@ class SiteController extends Controller
     {
         return $this->render('index');
     }
+	public function actionTest()
+    {
+		// $to ='8652684335';
+		// $text = 'Thank you for Registering on MYGymPartner. Your verification OTP Code is 67676';
+        // $result = Yii::$app->Sms->sendSms($to, $text);
+		// $res = explode("[",$result);
+			// if(ltrim($res[0])=='OK '){
+				// echo $res[0];
+			// }else{
+				// echo $res[0];
+			// }
+    }
     public function actionPricing()
     {
         return $this->render('pricing');
@@ -201,11 +213,19 @@ class SiteController extends Controller
 			$model->address = isset($request['address'])?$request['address']:'';
 
             if ($model->load($request)&& $model->validate()) {
-    			// $model->password = md5(sha1($model->password));
+				$to = $model->mobile_no;
     			$model->password = $model->setPassword($model->password);
-    			//$model->generateAuthKey();
     			$model->save();
-    			Yii::$app->session->setFlash('success', 'Your account has been successfully registered . Please verify with OTP . ');
+				
+				$otp_code = strtoupper(substr(md5(uniqid()), 0, 6));
+				$text = 'Thank you for Registering on MYGymPartner. Your verification OTP Code is '.$otp_code;
+				$result = Yii::$app->Sms->sendSms($to, $text);
+				$res = explode("[",$result);
+				if(ltrim($res[0])=='OK '){
+					Yii::$app->session->setFlash('success', 'Your account has been successfully registered . Please verify with OTP PIN . ');
+				}else{
+					Yii::$app->session->setFlash('success', $result);
+				}
     			return $this->goHome();
 
     		}else {

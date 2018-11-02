@@ -19,5 +19,8 @@ return [
 				'defaultRoute' => '/site/index'
             ],
         ],
+		'Sms' => [
+            'class' => 'common\components\Sms',
+        ],
     ],
 ];
