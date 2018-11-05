@@ -11,7 +11,6 @@
  use yii\helpers\Url;
  use yii\helpers\ArrayHelper;
 
-
  ?>
 <div class="footer">
 	<div class="container">
@@ -151,7 +150,7 @@
 				
 				<?= $form->field($model, 'owner_name')->textInput(['placeholder' => "Owner Name"])->label('Owner Name') ?>
 				
-				<?= $form->field($model, 'mobile_no')->textInput(['placeholder' => "Mobile No."])->label('Mobile No.')?>
+				<?= $form->field($model, 'mobile_no')->textInput(['placeholder' => "Mobile No.",'maxlength'=>10])->label('Mobile No.')?>
 
 				<?= $form->field($model, 'email')->textInput(['placeholder' => "Email"])->label('Email') ?>
 				
@@ -161,7 +160,7 @@
 				
 				<?= $form->field($model, 'address')->textInput(['placeholder' => 'Address'])->label('Address'); ?>
 
-				<?= $form->field($model, 'pincode')->textInput(['placeholder' => "Pin Code"])->label('Pin Code') ?>
+				<?= $form->field($model, 'pincode')->textInput(['placeholder' => "Pin Code",'maxlength'=>6])->label('Pin Code') ?>
 
 		        <?= $form->field($model, 'state')->dropDownList(
 			            ArrayHelper::map(MgpStates::find()->where(['status'=>1])->all(),'id','state_name'),
@@ -192,7 +191,7 @@
 			      ?>
 				<?= $form->field($member_model, 'member_name')->textInput(['placeholder' => "Member Name"])->label('Member Name') ?>
 				
-				<?= $form->field($member_model, 'mobile_no')->textInput(['placeholder' => "Mobile No."])->label('Mobile No.')?>
+				<?= $form->field($member_model, 'mobile_no')->textInput(['placeholder' => "Mobile No.",'maxlength'=>10])->label('Mobile No.')?>
 
 				<?= $form->field($member_model, 'email')->textInput(['placeholder' => "Email"])->label('Email') ?>
 				
@@ -202,7 +201,7 @@
 				
 				<?= $form->field($member_model, 'address')->textInput(['placeholder' => 'Address'])->label('Address'); ?>
 
-				<?= $form->field($member_model, 'pincode')->textInput(['placeholder' => "Pin Code"])->label('Pin Code') ?>
+				<?= $form->field($member_model, 'pincode')->textInput(['placeholder' => "Pin Code",'maxlength'=>6])->label('Pin Code') ?>
 
 		        
 
