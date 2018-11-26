@@ -61,12 +61,12 @@ use yii\helpers\Url;
           <div class="small-box bg-white">
             <div class="inner">
               <h3>65</h3>
-              <p>Message</p>
+              <p>Payment Requests</p>
             </div>
             <div class="icon">
                 <?= Html::img('@web/img/icons/mail.png', ['alt' => 'Message-icon']);?>
             </div>
-            <a href="<?= Url::to('')?>" class="small-box-footer">
+            <a href="<?= Url::to('pay-request-details')?>" class="small-box-footer">
               More info <i class="fa fa-arrow-circle-right"></i>
             </a>
           </div>

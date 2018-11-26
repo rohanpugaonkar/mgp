@@ -3,10 +3,6 @@
 namespace frontend\models;
 
 use Yii;
-use yii\base\NotSupportedException;
-use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecord;
-use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "mgp_owners".
@@ -14,7 +10,7 @@ use yii\web\IdentityInterface;
  * @property int $id
  * @property string $gym_name
  * @property string $owner_name
- * @property string $mobile_no
+ * @property int $mobile_no
  * @property string $email
  * @property string $username
  * @property string $password
@@ -23,18 +19,21 @@ use yii\web\IdentityInterface;
  * @property int $city
  * @property int $state
  * @property int $country
+ * @property int $otp_status 1=Done,0=Not Done
+ * @property int $admin_package
+ * @property int $gym_package_status 1=Done,0=Not Done
  * @property int $status
  * @property string $created_at
  * @property int $created_by
  * @property string $updated_at
  * @property int $updated_by
  */
-class MgpOwners extends \yii\db\ActiveRecord implements IdentityInterface
+class MgpOwners extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
-    const STATUS_ACTIVE = 1;
-	    public $password_hash;
-	    public $auth_key;
 
+    const STATUS_ACTIVE = 1;
+    public $password_hash;
+    public $auth_key;
     /**
      * {@inheritdoc}
      */
@@ -46,20 +45,36 @@ class MgpOwners extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
+    // public function rules()
+    // {
+    //     return [
+    //         [['gym_name', 'owner_name', 'mobile_no', 'email', 'username', 'password', 'address', 'pincode', 'city', 'state', 'country', 'status', 'created_at', 'created_by', 'updated_by'], 'required'],
+    //         [['mobile_no', 'pincode', 'city', 'state', 'country', 'otp_status', 'admin_package', 'gym_package_status', 'status', 'created_by', 'updated_by'], 'integer'],
+    //         [['address'], 'string'],
+    //         [['created_at', 'updated_at'], 'safe'],
+    //         [['gym_name', 'owner_name', 'username'], 'string', 'max' => 50],
+    //         [['email'], 'string', 'max' => 256],
+    //         [['password'], 'string', 'max' => 250],
+    //     ];
+    // }
+
+    /**
+     * {@inheritdoc}
+     */
     public function rules()
     {
         return [
             [['gym_name', 'owner_name', 'mobile_no', 'email', 'username', 'password', 'address', 'pincode', 'city', 'state', 'country', 'status', 'created_at', 'created_by'], 'required'],
             [['mobile_no', 'pincode', 'status'], 'integer'],
             [['address'], 'string'],
-			[['mobile_no'], 'string','min'=> 10, 'max' => 12,'tooLong'=>"Mobile must be atleast 10 characters long"],
-			['email','email'],
-			['pincode', 'isPincode'],
+            [['mobile_no'], 'string','min'=> 10, 'max' => 12,'tooLong'=>"Mobile must be atleast 10 characters long"],
+            ['email','email'],
+            ['pincode', 'isPincode'],
             [['email'],'unique', 'message'=> 'Email already exist', 'targetClass' => '\frontend\models\MgpOwners'],
             [['created_at', 'updated_at'], 'safe'],
             [['gym_name', 'owner_name', 'username'], 'string', 'max' => 50],
             [['password'], 'string', 'max' => 250],
-            //[['password'], 'match', 'pattern' => '/^(?=.*[0-9])(?=.*[A-Z])([a-zA-Z0-9]+)$/' , 'message'=> 'Password must contain a Number, Capital letter and Small letter.'],
+            [['password'], 'match', 'pattern' => '/^(?=.*[0-9])(?=.*[A-Z])([a-zA-Z0-9]+)$/' , 'message'=> 'Password must contain a Number, Capital letter and Small letter.'],
             [['email'], 'string', 'max' => 256],
         ];
     }
@@ -82,6 +97,9 @@ class MgpOwners extends \yii\db\ActiveRecord implements IdentityInterface
             'city' => 'City',
             'state' => 'State',
             'country' => 'Country',
+            'otp_status' => 'Otp Status',
+            'admin_package' => 'Admin Package',
+            'gym_package_status' => 'Gym Package Status',
             'status' => 'Status',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
@@ -98,23 +116,23 @@ class MgpOwners extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => $username, 'otp_status' => self::STATUS_ACTIVE]);
     }
 
     public function validatePassword($password)
     {
         return Yii::$app->security->validatePassword($password, $this->password);
     }
-	
-	 public function isPincode($attribute)
+    
+     public function isPincode($attribute)
     {
         if (!preg_match('/^[1-9][0-9]{5}$/', $this->$attribute)) {
             $this->addError($attribute, 'Must contain exactly 6 digits.');
         }
 
     }
-	
-	public static function findByEmail($email)
+    
+    public static function findByEmail($email)
     {
         $exists = self::find()->where(['email' => $email])->exists();
         if(empty($exists)){ //if user does not exist in tblmembers then check in tbltempmembers
@@ -128,13 +146,13 @@ class MgpOwners extends \yii\db\ActiveRecord implements IdentityInterface
         }
         return self::findOne(['email' => $email]);
     }
-	
-	/**
+    
+    /**
      * {@inheritdoc}
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['id' => $id, 'otp_status' => self::STATUS_ACTIVE]);
     }
 
     /**

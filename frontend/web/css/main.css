@@ -875,6 +875,24 @@ input:focus {
 	margin-right:15px;
 }
 .aboutus .whyus ul li span{width:200px;}
+.privacypolicy{
+    width: 100%;
+    background: #fff;
+    background-attachment: fixed;
+    padding: 40px 0px;
+    color: #333;
+    background-size: 100% 100%;
+    position: relative;
+}
+.privacypolicy h3{
+    font-family: 'OpenSans-Semibold';
+    font-size: 20px;
+    padding-bottom: 10px;
+    color: #852359;
+}
+.privacypolicy p{
+    text-align: justify;
+}
 .feature{
 	width: 100%;
     background: #fff;
@@ -1463,7 +1481,7 @@ input:focus {
     line-height: 40px;
     text-transform: capitalize;
 }
-.pricingg .tem-btn {
+.pricingg .tem-btn, .checkout .tem-btn {
     display: inline-block;
     line-height: 50px;
     width: 180px;
@@ -1483,6 +1501,77 @@ input:focus {
 .pricingg .tem-btn:hover{
 	background-color: #fff;
 	color:#4e0e31;
+}
+.checkout{
+    position:relative;
+    padding:3em 0em;
+}
+.checkout h3{
+    font-family: 'OpenSans-Semibold';
+    font-size: 20px;
+    background: #eee;
+    padding:10px;
+    margin-bottom: 15px;
+}
+.checkout .extra{
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+.checkout .form-group{
+    padding-left: 0px;
+}
+.checkout .form-group .form-group{
+    margin-bottom:0px;
+}
+.checkout .form-control{
+    border-radius: 0px;
+    box-shadow: none;
+}
+.checkout .order-summary{
+    background: #eee;
+    padding: 30px 30px 150px;
+}
+.checkout .order-summary h4{
+    font-family: 'OpenSans-Semibold';
+    text-align: center;
+}
+.checkout .order-summary ul{
+    background: #fff;
+    padding: 20px 20px;
+    margin: 20px 0px;
+}
+.checkout .order-summary ul li{
+    margin-bottom: 7px;
+}
+.checkout .order-summary ul li.divider{
+    border-top:1px solid #ddd;
+}
+.checkout .order-summary ul li:last-child{
+    font-size: 16px;
+}
+.checkout .order-summary ul li:last-child span{
+    font-family: 'OpenSans-Semibold';
+    font-size: 20px;
+    color:#4e0e31;
+}
+#thankyou .modal-header{
+    padding:30px;
+}
+#thankyou .fa-check{
+    color: #fff;
+    font-size: 35px;
+    border: 1px solid #fff;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 100px;
+}
+#thankyou .modal-body{
+    text-align: center;
+    padding:25px;
+}
+.checkout .btn-block{
+    width:100% !important;
 }
 .contact{
 	position:relative;
@@ -1716,7 +1805,34 @@ input:focus {
 .footer .second {
 	padding-left:30px;
 }
-
+.footer .social{
+    display: inline-block;
+}
+.footer .social li{
+    display: inline-block;
+    margin-right: 10px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: #ffffffd9;
+    border-radius: 3px;
+    transition: 0.5s all;
+    border:1px solid #fff;
+}
+.footer .social li:hover{
+    background: #4e0e31;
+    transition: 0.5s all;
+    border:1px solid #ffffffd9;
+}
+.footer .social li a{
+    font-size: 20px;
+    color:#4e0e31;
+    display: :block;
+}
+.footer .social li:hover a{
+     color: #ffffffd9;
+}
 .copyright{
 	background:#2b162c;
 	padding:10px;

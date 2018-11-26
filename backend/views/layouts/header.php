@@ -33,7 +33,7 @@ use yii\helpers\Url;
                   <a href="<?= Url::to('member')?>" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="<?= Url::to('')?>" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="<?= Url::to('index')?>" class="btn btn-default btn-flat">Sign out</a>
                 </div>
               </li>
             </ul>

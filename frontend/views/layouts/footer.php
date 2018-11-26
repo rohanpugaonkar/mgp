@@ -8,8 +8,15 @@
  use frontend\models\MgpStates;
  use frontend\models\MgpCities;
  use frontend\models\MgpMembers;
+ use frontend\models\MgpOtp;
  use yii\helpers\Url;
  use yii\helpers\ArrayHelper;
+
+ $session = Yii::$app->session;
+ $user_id = $session->get('user_id');
+ $op_user_id = $session->get('op_user_id');
+
+ unset($session['user_id']);
 
  ?>
 <div class="footer">
@@ -74,7 +81,47 @@
 
 <!-- Login Modal -->
 
+<div id="otp_modal" class="modal fade mygym-modal" role="dialog">
+  <div class="modal-dialog modal-md">
+	<!-- Modal content-->
+	<div class="modal-content">
+	  <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h4 class="modal-title text-center">OTP Verification</h4>
+	  </div>
+	  <div class="modal-body">
+		<!-- <form role="form"> -->
+		<?php 
+			$model = new MgpOtp();
+		    $form = ActiveForm::begin([
+		        'options' => ['class' => 'form-horizontal','id' => 'otp_verification'],
 
+		        // 'action'=> Url::base(true).'/site/otp-verification'
+
+		    ]);
+		?>
+			<div class="form-group" id="error_div" style="color:red;">
+
+			</div>
+			<?= $form->field($model, 'user_type')->hiddenInput(['value'=>'O'])->label(false); ?>
+			<?= $form->field($model, 'uid')->hiddenInput(['value'=>$op_user_id])->label(false); ?>
+							
+			<?= $form->field($model, 'otp')->textInput(['placeholder' => "OTP",'id'=>'otpcode'])->label('Please enter OTP here'); ?>
+			
+			
+			
+			<div class="form-group">
+				<?= Html::a('<a onclick="verify_otp();return false;"><input type="button" class="btn btn-warning" value="Verify OTP"></a>') ?>
+			</div>
+		<!-- </form> -->
+		<?php 
+		 		ActiveForm::end();
+		 ?>
+	  </div>
+	</div>
+
+  </div>
+</div>
 
    
 <div id="login" class="modal fade mygym-modal" role="dialog">
@@ -96,7 +143,6 @@
 
 		    ]);
 		?>
-			
 							
 			<?= $form->field($model, 'username')->textInput(['placeholder' => "Username"]); ?>
 			
@@ -142,7 +188,8 @@
 						$form = ActiveForm::begin([
 						// 'enableAjaxValidation' => true,
 						'id' => 'register_owner',
-						'options' => ['class' => 'form-horizontal mygym-modal'],
+						'options' => ['class' => 'form-horizontal mygym-modal',
+						],
 						'action'=> Url::base(true).'/site/register'
 					]);
 		      ?>			
@@ -175,7 +222,7 @@
 			       )->label('Country') ?>
 
 
-				<?= Html::submitButton('Register', ['class' =>'btn btn-default','id'=>'']) ?>
+				<?= Html::submitButton('Register', ['class' =>'btn btn-default','id'=>'owner_submit']) ?>
 				<?php ActiveForm::end();?>
 		    </div>
 
@@ -235,9 +282,10 @@
   </div>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
 <script>
 	$(document).ready(function(){
+			
 
 			$('#member_state').on('change',function(){
 				var url =   '<?php echo Url::base(true); ?>/site/get-state-cities';
@@ -254,6 +302,7 @@
 			});
 
 			$('#owner_state').on('change',function(){
+				
 				var url =   '<?php echo Url::base(true); ?>/site/get-state-cities';
 				var state_id = $(this).val();
 				$.ajax({
@@ -261,11 +310,36 @@
 					data: {state_id:state_id}, 
 					type: "POST", 
 					success: function(result){
+			    	   	
 			    	    $("#owner_city").html(result);
 				    }
 				});
 
 			});
 	});
+
+	function verify_otp()
+	{
+		var otpcode = $('#otpcode').val();
+		if(otpcode == ''){
+			$('#error_div').html('Please enter OTP.');
+		}else{
+			var form_data = $('#otp_verification').serialize();
+			var url =   '<?php echo Url::base(true); ?>/site/verify-otp';
+			$.ajax({
+				url: url, 
+				data: form_data, 
+				type: "POST", 
+				dataType: "json", 
+				success: function(result){
+		    	   	if(result.status == 1){
+		    	   		location.reload();
+		    	   	}else{
+		    	   		$('#error_div').html(result.msg);
+		    	   	}
+			    }
+			});	
+		}		
+	}
 </script>
 

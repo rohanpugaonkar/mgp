@@ -18,6 +18,8 @@ use Yii;
  */
 class MgpPayments extends \yii\db\ActiveRecord
 {
+
+    public $pay_condition;
     /**
      * {@inheritdoc}
      */

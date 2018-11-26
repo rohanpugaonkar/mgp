@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string $name
+ * @property int $duration
  * @property int $amount
  * @property int $status
  */
@@ -28,8 +29,8 @@ class MgpAdminPackages extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'amount', 'status'], 'required'],
-            [['amount', 'status'], 'integer'],
+            [['name', 'duration', 'amount', 'status'], 'required'],
+            [['duration', 'amount', 'status'], 'integer'],
             [['name'], 'string', 'max' => 50],
         ];
     }
@@ -42,6 +43,7 @@ class MgpAdminPackages extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
+            'duration' => 'Duration',
             'amount' => 'Amount',
             'status' => 'Status',
         ];

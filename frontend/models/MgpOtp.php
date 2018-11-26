@@ -10,8 +10,8 @@ use Yii;
  * @property int $id
  * @property string $user_type
  * @property int $uid
- * @property int $otp
- * @property string $created-at
+ * @property string $otp
+ * @property string $created_at
  * @property string $updated_at
  */
 class MgpOtp extends \yii\db\ActiveRecord
@@ -30,10 +30,10 @@ class MgpOtp extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            // [['id'], 'required'],
-            [['uid', 'otp'], 'integer'],
             [['user_type'], 'string'],
-            [['created-at', 'updated_at'], 'safe'],
+            [['uid'], 'integer'],
+            [['created_at', 'updated_at'], 'safe'],
+            [['otp'], 'string', 'max' => 10],
         ];
     }
 
@@ -47,7 +47,7 @@ class MgpOtp extends \yii\db\ActiveRecord
             'user_type' => 'User Type',
             'uid' => 'Uid',
             'otp' => 'Otp',
-            'created-at' => 'Created At',
+            'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
     }

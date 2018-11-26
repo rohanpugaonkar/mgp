@@ -8,6 +8,9 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use backend\models\LoginForm;
+use backend\models\MgpAdmin;
+use frontend\models\MgpPayments;
+use frontend\models\MgpPaymentsSearch;
 
 /**
  * Site controller
@@ -64,7 +67,13 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        //return $this->render('index');
+         $this->layout = false;
+        $model = new MgpAdmin();
+        
+        return $this->render('login', [
+            'model' => $model,
+        ]);
     }
     public function actionMembership()
     {
@@ -140,17 +149,54 @@ class SiteController extends Controller
         // if (!Yii::$app->user->isGuest) {
         //     return $this->goHome();
         // }
+        $model = new MgpAdmin();
+// $model->load(\Yii::$app->request->post());
 
-        // $model = new LoginForm();
-        // if ($model->load(Yii::$app->request->post()) && $model->login()) {
-        //     return $this->goBack();
-        // } else {
-        //     $model->password = '';
 
-        //     return $this->render('login', [
-        //         'model' => $model,
-        //     ]);
-        // }
+// if ($model->validate()) {
+//     // all inputs are valid
+//     die('if');
+// } else {
+//     // validation failed: $errors is an array containing error messages
+//     $errors = $model->errors;
+// }
+// return $this->render('login', [
+//                 'model' => $model,
+//             ]);
+
+
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            // echo 'in';
+            // echo '<pre>';print_r(Yii::$app->user->identity);
+            return $this->redirect(['site/dashboard']);
+            //  return $this->render('index', [
+            //     'model' => $model,
+            // ]);  
+        } else {
+            $this->layout = false;
+
+            return $this->render('login', [
+                'model' => $model,
+            ]);
+        }
+       
+    }
+
+    public function actionDashboard(){
+        $model = new MgpAdmin();
+        return $this->render('index', [
+            'model' => $model,
+        ]);
+    }
+    public function actionPayRequestDetails()
+    {
+        $searchModel = new MgpPaymentsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('payrequestdetails', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
     /**
@@ -164,4 +210,7 @@ class SiteController extends Controller
 
         return $this->goHome();
     }
+
+
+
 }
