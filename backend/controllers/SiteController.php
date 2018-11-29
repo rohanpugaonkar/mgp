@@ -11,6 +11,7 @@ use backend\models\LoginForm;
 use backend\models\MgpAdmin;
 use frontend\models\MgpPayments;
 use frontend\models\MgpPaymentsSearch;
+use frontend\models\MgpOwners;
 
 /**
  * Site controller
@@ -190,6 +191,7 @@ class SiteController extends Controller
     }
     public function actionPayRequestDetails()
     {
+        // $this->layout = 'header';
         $searchModel = new MgpPaymentsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -209,6 +211,26 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
+    }
+
+    public function actionApprovePaymentRequest()
+    {
+        $pay_id = Yii::$app->request->post('pay_id');
+        // $this->layout = 'header';
+        $payDetails = MgpPayments::findOne(['id'=>$pay_id]);
+
+
+        $payModel = MgpPayments::findOne($pay_id);
+        $payModel->status = 1;
+        $payModel->save(false);
+        // echo '<pre>';print_r($payDetails);die;
+        $owner_id = $payDetails['uid'];  
+        $ownerModel = MgpOwners::findOne($owner_id);
+        $ownerModel->admin_package = 2;
+        $ownerModel->save(false); 
+        echo true;
+
+        
     }
 
 

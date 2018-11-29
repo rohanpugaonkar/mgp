@@ -18,7 +18,7 @@ class MgpPaymentsSearch extends MgpPayments
     public function rules()
     {
         return [
-            [['id', 'user_type', 'uid', 'package_id', 'payment_method_id'], 'integer'],
+            [['id', 'user_type', 'uid', 'package_id', 'payment_method_id', 'status'], 'integer'],
             [['reference_no', 'payment_from_date', 'payment_to_date', 'insert_time'], 'safe'],
         ];
     }
@@ -41,7 +41,7 @@ class MgpPaymentsSearch extends MgpPayments
      */
     public function search($params)
     {
-        $query = MgpPayments::find();
+        $query = MgpPayments::find()->where(['status'=>0]);
 
         // add conditions that should always apply here
 
@@ -66,6 +66,7 @@ class MgpPaymentsSearch extends MgpPayments
             'payment_method_id' => $this->payment_method_id,
             'payment_from_date' => $this->payment_from_date,
             'payment_to_date' => $this->payment_to_date,
+            'status' => $this->status,
             'insert_time' => $this->insert_time,
         ]);
 

@@ -10,16 +10,16 @@ use Yii;
  * @property int $id
  * @property int $user_type 1=owner,0=member
  * @property int $uid
+ * @property int $package_id
  * @property int $payment_method_id
  * @property string $reference_no
  * @property string $payment_from_date
  * @property string $payment_to_date
+ * @property int $status
  * @property string $insert_time
  */
 class MgpPayments extends \yii\db\ActiveRecord
 {
-
-    public $pay_condition;
     /**
      * {@inheritdoc}
      */
@@ -34,8 +34,8 @@ class MgpPayments extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_type', 'uid','package_id','payment_method_id', 'reference_no', 'payment_from_date', 'payment_to_date', 'insert_time'], 'required'],
-            [['user_type', 'uid', 'payment_method_id','package_id'], 'integer'],
+            [['user_type', 'uid', 'package_id', 'payment_method_id', 'insert_time'], 'required'],
+            [['user_type', 'uid', 'package_id', 'payment_method_id', 'status'], 'integer'],
             [['payment_from_date', 'payment_to_date', 'insert_time'], 'safe'],
             [['reference_no'], 'string', 'max' => 256],
         ];
@@ -50,10 +50,12 @@ class MgpPayments extends \yii\db\ActiveRecord
             'id' => 'ID',
             'user_type' => 'User Type',
             'uid' => 'Uid',
+            'package_id' => 'Package ID',
             'payment_method_id' => 'Payment Method ID',
             'reference_no' => 'Reference No',
             'payment_from_date' => 'Payment From Date',
             'payment_to_date' => 'Payment To Date',
+            'status' => 'Status',
             'insert_time' => 'Insert Time',
         ];
     }
