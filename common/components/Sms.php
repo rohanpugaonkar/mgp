@@ -63,4 +63,63 @@ class Sms extends Component {
 	   return $result;
 	}
 	
+	 public static function actionSendmail($template,$params,$from,$to,$bcc,$subject)
+    {
+    	Yii::$app->mailer->compose($template, $params)
+	    ->setFrom($from)
+	    ->setTo($to)
+	    ->setSubject($subject)
+		->setBcc($bcc)
+	    ->send();
+	    return true;
+    }
+
+	public static function actionSendmailattach($template,$params,$from,$to,$subject,$attachment,$bcc) 
+    {
+		
+
+    	Yii::$app->mailer->compose($template, $params)
+	    ->setFrom($from)
+	    ->setTo($to)
+	    ->setSubject($subject)
+        ->setBcc($bcc)
+		->attach($attachment)
+	    ->send();
+	    return true;
+    }
+	
+	public static function actionPincodesearch($pincode)
+    {
+        if (!empty($pincode)) {
+            $data = '';
+            try { //government api
+                $data = file_get_contents("https://api.data.gov.in/resource/6176ee09-3d56-4a3b-8115-21841576b2f6?api-key=579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b&format=json&limit=1&filters[pincode]=$pincode&fields=pincode,districtname,statename");
+                $data_json = json_decode($data);
+                if (!empty($data_json->records)) {
+                    $pin_data  = $data_json->records[0];
+
+                    return array("status" => "success","message" => "Success","district" => $pin_data->districtname,"state" => $pin_data->statename);
+                }
+                else {
+                    return "failed";
+                }
+
+            } catch (ErrorException $e) { //postal pin api
+                $data      = file_get_contents("http://postalpincode.in/api/pincode/$pincode");
+                $data_json = json_decode($data,true);
+                $pin_data  = $data_json['PostOffice'][0];
+                $count     = count($pin_data);
+
+                if ($count > 0) {
+                    return array("status" => "success","message"=> "Success","district" => $pin_data['District'],"state"=>$pin_data['State']);
+                } else {
+                    return  "failed";
+                }
+            }
+        } else {
+            return 'failed';
+        }
+    }
+
+	
 }

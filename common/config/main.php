@@ -22,5 +22,8 @@ return [
 		'Sms' => [
             'class' => 'common\components\Sms',
         ],
+		'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+        ],
     ],
 ];
