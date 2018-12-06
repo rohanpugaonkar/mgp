@@ -207,19 +207,29 @@
 				
 				<?= $form->field($model, 'address')->textInput(['placeholder' => 'Address'])->label('Address'); ?>
 
-				<?= $form->field($model, 'pincode')->textInput(['placeholder' => "Pin Code",'maxlength'=>6])->label('Pin Code') ?>
+				<?= $form->field($model, 'pincode')->textInput(['placeholder' => "Pin Code",'maxlength'=>6,'onkeyup'=>'pincode_based_address(this.value);return false;'])->label('Pin Code') ?>
 
-		        <?= $form->field($model, 'state')->dropDownList(
-			            ArrayHelper::map(MgpStates::find()->where(['status'=>1])->all(),'id','state_name'),
-			            ['prompt'=>'Select State','id'=>'owner_state',]
-			       )->label('State') ?>
 
-			    <?= $form->field($model, 'city')->dropDownList(array(),['prompt'=>'Select City','id'=>'owner_city']) ?>   
+			    <?php //echo $form->field($model, 'city')->dropDownList(array(),['prompt'=>'Select City','id'=>'owner_city']);
+			     ?>   
+
+			      <?php //echo  $form->field($model, 'state')->dropDownList(
+			       //      ArrayHelper::map(MgpStates::find()->where(['status'=>1])->all(),'id','state_name'),
+			       //      ['prompt'=>'Select State','id'=>'owner_state',]
+			       // )->label('State');
+			        ?>
 				
-				<?= $form->field($model, 'country')->dropDownList(
-			            ArrayHelper::map(MgpCountries::find()->where(['status'=>1])->all(),'id','country_name'),
-			            ['prompt'=>'Select Country']
-			       )->label('Country') ?>
+				<?php 
+					// echo $form->field($model, 'country')->dropDownList(
+			  //           ArrayHelper::map(MgpCountries::find()->where(['status'=>1])->all(),'id','country_name'),
+			  //           ['prompt'=>'Select Country','id'=>'owner_country',]
+			  //      )->label('Country');
+			   ?>
+
+			       <?= $form->field($model, 'city')->textInput(['id'=>'owner_city','readonly'=>true])->label('City') ?>
+			       <?= $form->field($model, 'district')->textInput(['id'=>'owner_district','readonly'=>true])->label('District') ?>
+			       <?= $form->field($model, 'state')->textInput(['id'=>'owner_state','readonly'=>true])->label('State') ?>
+			       <?= $form->field($model, 'country')->textInput(['id'=>'owner_country','readonly'=>true])->label('Country') ?>
 
 
 				<?= Html::submitButton('Register', ['class' =>'btn btn-default','id'=>'owner_submit']) ?>
@@ -248,21 +258,29 @@
 				
 				<?= $form->field($member_model, 'address')->textInput(['placeholder' => 'Address'])->label('Address'); ?>
 
-				<?= $form->field($member_model, 'pincode')->textInput(['placeholder' => "Pin Code",'maxlength'=>6])->label('Pin Code') ?>
+				<?= $form->field($member_model, 'pincode')->textInput(['placeholder' => "Pin Code",'maxlength'=>6,'onkeyup'=>'member_pincode_based_address(this.value);return false;'])->label('Pin Code') ?>
 
 		        
 
-				<?= $form->field($member_model, 'state')->dropDownList(
-			            ArrayHelper::map(MgpStates::find()->where(['status'=>1])->all(),'id','state_name'),
-			            ['prompt'=>'Select State','id'=>'member_state']
-			       )->label('State') ?>
+				<?php 
+					// echo $form->field($member_model, 'state')->dropDownList(
+			  //           ArrayHelper::map(MgpStates::find()->where(['status'=>1])->all(),'id','state_name'),
+			  //           ['prompt'=>'Select State','id'=>'member_state']
+			  //      )->label('State');
 
-			    <?= $form->field($member_model, 'city')->dropDownList(array(),['prompt'=>'Select Option','id'=>'member_city']) ?>   
+			  //   	echo $form->field($member_model, 'city')->dropDownList(array(),['prompt'=>'Select Option','id'=>'member_city']);   
 				
-				<?= $form->field($member_model, 'country')->dropDownList(
-			            ArrayHelper::map(MgpCountries::find()->where(['status'=>1])->all(),'id','country_name'),
-			            ['prompt'=>'Select Country']
-			       )->label('Country') ?>	
+					// echo $form->field($member_model, 'country')->dropDownList(
+			  //           ArrayHelper::map(MgpCountries::find()->where(['status'=>1])->all(),'id','country_name'),
+			  //           ['prompt'=>'Select Country']
+			  //      )->label('Country');
+
+			       ?>	
+
+			   <?= $form->field($member_model, 'city')->textInput(['id'=>'member_city','readonly'=>true])->label('City') ?>
+		       <?= $form->field($member_model, 'district')->textInput(['id'=>'member_district','readonly'=>true])->label('District') ?>
+		       <?= $form->field($member_model, 'state')->textInput(['id'=>'member_state','readonly'=>true])->label('State') ?>
+		       <?= $form->field($member_model, 'country')->textInput(['id'=>'member_country','readonly'=>true])->label('Country') ?>
 
 				<?= $form->field($member_model, 'gym_owner_id')->dropDownList(
 			            ArrayHelper::map(MgpOwners::find()->all(),'id','gym_name'),
@@ -340,6 +358,64 @@
 			    }
 			});	
 		}		
+	}
+
+	function pincode_based_address(pincode)
+	{
+
+		if(pincode.length == 6){
+			
+			var form_data = {pincode:pincode};
+			var url =   '<?php echo Url::base(true); ?>/site/pincode-based-address';
+			$.ajax({
+				url: url, 
+				data: form_data, 
+				type: "POST", 
+				dataType: "json", 
+				success: function(result){
+		    	   	if(result.status == 'success'){
+		    	   		$('#owner_city').val(result.city);
+		    	   		$('#owner_district').val(result.district);
+		    	   		$('#owner_state').val(result.state);
+		    	   		$('#owner_country').val('India');
+		    	   	}else{
+		    	   		$('#owner_city').val('');
+		    	   		$('#owner_district').val('');
+		    	   		$('#owner_state').val('');
+		    	   		$('#owner_country').val('');
+		    	   	}
+			    }
+			});	
+		}
+	}
+
+	function member_pincode_based_address(pincode)
+	{
+
+		if(pincode.length == 6){
+			
+			var form_data = {pincode:pincode};
+			var url =   '<?php echo Url::base(true); ?>/site/pincode-based-address';
+			$.ajax({
+				url: url, 
+				data: form_data, 
+				type: "POST", 
+				dataType: "json", 
+				success: function(result){
+		    	   	if(result.status == 'success'){
+		    	   		$('#member_city').val(result.city);
+		    	   		$('#member_district').val(result.district);
+		    	   		$('#member_state').val(result.state);
+		    	   		$('#member_country').val('India');
+		    	   	}else{
+		    	   		$('#member_city').val('');
+		    	   		$('#member_district').val('');
+		    	   		$('#member_state').val('');
+		    	   		$('#member_country').val('');
+		    	   	}
+			    }
+			});	
+		}
 	}
 </script>
 

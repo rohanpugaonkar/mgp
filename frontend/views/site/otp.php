@@ -1,21 +1,22 @@
 <?php
-  use Yii;
- use yii\helpers\Html;
- use yii\bootstrap\Modal;
- use yii\widgets\ActiveForm;
- use common\models\LoginForm;
- use frontend\models\MgpOwners;
- use frontend\models\MgpCountries;
- use frontend\models\MgpStates;
- use frontend\models\MgpCities;
- use frontend\models\MgpMembers;
- use frontend\models\MgpOtp;
- use yii\helpers\Url;
- use yii\helpers\ArrayHelper;
+
+use yii\helpers\Html;
+use yii\bootstrap\Modal;
+use yii\widgets\ActiveForm;
+use common\models\LoginForm;
+use frontend\models\MgpOwners;
+use frontend\models\MgpCountries;
+use frontend\models\MgpStates;
+use frontend\models\MgpCities;
+use frontend\models\MgpMembers;
+use frontend\models\MgpOtp;
+use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 
  $session = Yii::$app->session;
  $user_id = $session->get('user_id');
  $op_user_id = $session->get('op_user_id');
+ $user_type = $session->get('user_type');
 
  unset($session['user_id']);
 
@@ -127,13 +128,13 @@
     <form id="otp_verification">
     <div id="form">
 
-      <input type="hidden" name="user_type" value="O" maxlength="6" />
-      <input type="hidden" name="uid" value="<?php echo $op_user_id ;?>" maxlength="6" />
+      <input type="hidden" name="user_type" value="<?php echo $user_type; ?>" maxlength="6" />
+      <input type="hidden" name="uid" value="<?php echo $op_user_id ; ?>" maxlength="6" />
       <input type="text" maxlength="6" name="otp" id="otpcode" />
       <button class="btn btn-primary btn-embossed" onclick="verify_otp();return false;">Verify</button>
     </div>
   </form>
-    
+
     <div>
       Didn't receive the code?<br />
       <a onclick="resend_otp();return false;" style="cursor: pointer;">Send code again</a><br />
@@ -142,7 +143,7 @@
 </div>
 </body>
 <script>
-  
+
 
   function verify_otp()
   {
@@ -153,10 +154,10 @@
       var form_data = $('#otp_verification').serialize();
       var url =   '<?php echo Url::base(true); ?>/site/verify-otp';
       $.ajax({
-        url: url, 
-        data: form_data, 
-        type: "POST", 
-        dataType: "json", 
+        url: url,
+        data: form_data,
+        type: "POST",
+        dataType: "json",
         success: function(result){
               if(result.status == 1){
                 // location.reload();
@@ -165,8 +166,8 @@
                 $('#error_div').html(result.msg);
               }
           }
-      }); 
-    }   
+      });
+    }
   }
 
   function resend_otp()
@@ -174,10 +175,10 @@
       var form_data = $('#otp_verification').serialize();
       var url =   '<?php echo Url::base(true); ?>/site/resend-otp';
       $.ajax({
-        url: url, 
-        data: form_data, 
-        type: "POST", 
-        dataType: "json", 
+        url: url,
+        data: form_data,
+        type: "POST",
+        dataType: "json",
         success: function(result){
               if(result.status == 1){
                 $('#success_div').html(result.msg);
@@ -187,7 +188,7 @@
                 $('#success_div').html('');
               }
           }
-      }); 
+      });
   }
 </script>
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace frontend\controllers;
 
 use Yii;
@@ -8,7 +9,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
- use frontend\models\MgpCities;
+use frontend\models\MgpCities;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
@@ -19,7 +20,10 @@ use frontend\models\MgpOtp;
 use frontend\models\MgpPayments;
 use frontend\models\MgpOwnerPackages;
 use frontend\models\MgpAdminPackages;
+use frontend\models\MgpAddressDetails;
 use common\components\Sms;
+
+use kartik\mpdf\Pdf;
 
 /**
  * Site controller
@@ -125,7 +129,7 @@ class SiteController extends Controller
         // if (!Yii::$app->user->isGuest) {
             // return $this->goHome();
         // }
-		
+
 		$request = Yii::$app->request->post();
         $model = new LoginForm();
         if ($model->load($request) && $model->login()) {
@@ -210,8 +214,8 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
-	
-	
+
+
 
     /**
      * Requests password reset.
@@ -268,39 +272,48 @@ class SiteController extends Controller
     }
 
     public function actionRegister(){
-        // echo '<pre>'.print_r($_POST,true);die;
         $request = Yii::$app->request->post();
-        // echo '<pre>'.print_r($request);die;
 
         if(isset($request['MgpOwners'])){
             $model = new MgpOwners();
             $model->created_at = date('Y-m-d H:i:s');
-            $model->created_by  = 0;
-            $model->status = 0;
+            $model->created_by = 0;
+            $model->status     = 0;
             $model->updated_by = 1;
-            $model->updated_by = 1;
-            $model->address = isset($request['address'])?$request['address']:'';
-            // echo '<pre>'.print_r($model->validate());die;
+            $model->address    = isset($request['MgpOwners']['address'])?$request['MgpOwners']['address']:'';
 
             if ($model->load($request) && $model->validate()) {
                 $to = $model->mobile_no;
                 $model->password = $model->setPassword($model->password);
-                // $model->save();
-                if($model->save()){                  
-                
+                if($model->save()){
+
+                    // saving address
+                    $addressModel             = new MgpAddressDetails();
+                    $addressModel->user_type  = 'O';
+                    $addressModel->uid        = $model->id;
+                    $addressModel->address    = $request['MgpOwners']['address'];
+                    $addressModel->city       = $request['MgpOwners']['city'];
+                    $addressModel->district   = $request['MgpOwners']['district'];
+                    $addressModel->state      = $request['MgpOwners']['state'];
+                    $addressModel->country    = $request['MgpOwners']['country'];
+                    $addressModel->status     = 1;
+                    $addressModel->created_at = date('Y-m-d H:i:s');
+                    $addressModel->save();
+
+                    // generated otp code
                     $otp_code = strtoupper(substr(md5(uniqid()), 0, 6));
 
                     //saving OTP in db
                     $otpModel = new MgpOtp();
-                    $otpModel->user_type    = 'O'; 
-                    $otpModel->uid          = $model->id; 
-                    $otpModel->otp          = $otp_code; 
-                    $otpModel->created_at   = date('Y-m-d H:i:s'); 
+                    $otpModel->user_type    = 'O';
+                    $otpModel->uid          = $model->id;
+                    $otpModel->otp          = $otp_code;
+                    $otpModel->created_at   = date('Y-m-d H:i:s');
                     $otpModel->save();
                     // if(!$otpModel->save())
                     // {
                     //     var_dump($otpModel->getErrors());
-                    // } 
+                    // }
                     // die;
 
                     $text = 'Thank you for Registering on MYGymPartner. Your verification OTP Code is '.$otp_code;
@@ -311,13 +324,14 @@ class SiteController extends Controller
                     $session = Yii::$app->session;
                     $session->set('user_id', $model->id);  // will be unset after otp modal generates
                     $session->set('op_user_id', $model->id);
+                    $session->set('user_type', 'O');
                     // if(ltrim($res[0])=='OK ' && $otp_sent){
                     //  Yii::$app->session->setFlash('success', 'Your account has been successfully registered . Please verify with OTP PIN . ');
                     // }else{
                     //  Yii::$app->session->setFlash('success', $result);
                     // }
                 }
-                
+
                 // return $this->goHome();
                 return $this->redirect(['site/otp-check']);
 
@@ -326,39 +340,98 @@ class SiteController extends Controller
                 $data = $model->getErrors();
                 // print_r($data);die;
                 if(isset($data['email'])){
-                    Yii::$app->session->setFlash('error', $data['email'][0]);// its dislplays error msg on your form    
+                    Yii::$app->session->setFlash('error', $data['email'][0]);// its dislplays error msg on your form
                 }
                 if(isset($data['username'])){
-                    Yii::$app->session->setFlash('error', $data['username'][0]);// its dislplays error msg on your form    
+                    Yii::$app->session->setFlash('error', $data['username'][0]);// its dislplays error msg on your form
                 }
                 if(isset($data['mobile'])){
-                    Yii::$app->session->setFlash('error', $data['mobile'][0]);// its dislplays error msg on your form    
+                    Yii::$app->session->setFlash('error', $data['mobile'][0]);// its dislplays error msg on your form
                 }
 
                 return $this->goHome();
             }
 
          }else{     //member registration
-
             $model = new MgpMembers();
-            $model->created_at = date('Y-m-d H:i:s');
-                $model->created_by  = 1;
+                $model->created_at = date('Y-m-d H:i:s');
+                $model->created_by = 1;
                 $model->updated_by = 1;
-                $model->status = 0;
-                $model->address = isset($request['address'])?$request['address']:'';
-            if ($model->load($request)&& $model->validate()) {
-                $model->save(); 
-                Yii::$app->session->setFlash('success', 'Your account has been successfully registered. Please verify with OTP . ');
-                return $this->goHome();
+                $model->status     = 0;
+                $model->address    = isset($request['address'])?$request['address']:'';
+            if ($model->load($request) && $model->validate()) {
+                 $model->password = $model->setPassword($model->password);
+                 $to = $model->mobile_no;
+                if($model->save()){
+
+                    // saving address
+                    $addressModel             = new MgpAddressDetails();
+                    $addressModel->user_type  = 'M';
+                    $addressModel->uid        = $model->id;
+                    $addressModel->address    = $request['MgpMembers']['address'];
+                    $addressModel->city       = $request['MgpMembers']['city'];
+                    $addressModel->district   = $request['MgpMembers']['district'];
+                    $addressModel->state      = $request['MgpMembers']['state'];
+                    $addressModel->country    = $request['MgpMembers']['country'];
+                    $addressModel->status     = 1;
+                    $addressModel->created_at = date('Y-m-d H:i:s');
+                    $addressModel->save();
+
+                    // generated otp code
+                    $otp_code = strtoupper(substr(md5(uniqid()), 0, 6));
+
+                    //saving OTP in db
+                    $otpModel = new MgpOtp();
+                    $otpModel->user_type    = 'M';
+                    $otpModel->uid          = $model->id;
+                    $otpModel->otp          = $otp_code;
+                    $otpModel->created_at   = date('Y-m-d H:i:s');
+                    $otpModel->save();
+                    // if(!$otpModel->save())
+                    // {
+                    //     var_dump($otpModel->getErrors());
+                    // }
+                    // die;
+
+                    $text = 'Thank you for Registering on MYGymPartner. Your verification OTP Code is '.$otp_code;
+                    $result = Yii::$app->Sms->sendSms($to, $text);
+                    // $res = explode("[",$result);
+                    // Yii::$app->session->setFlash('success', 'Your account has been successfully registered . Please verify with OTP PIN . ');
+
+                    $session = Yii::$app->session;
+                    $session->set('user_id', $model->id);  // will be unset after otp modal generates
+                    $session->set('op_user_id', $model->id);
+                    $session->set('user_type', 'M');
+                    // if(ltrim($res[0])=='OK ' && $otp_sent){
+                    //  Yii::$app->session->setFlash('success', 'Your account has been successfully registered . Please verify with OTP PIN . ');
+                    // }else{
+                    //  Yii::$app->session->setFlash('success', $result);
+                    // }
+                }
+
+                // return $this->goHome();
+                return $this->redirect(['site/otp-check']);
+
 
             }else {
-                // HERE YOU CAN PRINT THE ERRORS OF MODEL
+                die('rereer');
+
+                 // HERE YOU CAN PRINT THE ERRORS OF MODEL
                 $data = $model->getErrors();
                 // print_r($data);die;
-                Yii::$app->session->setFlash('error', $data['email'][0]);// its dislplays error msg on your form
+                if(isset($data['email'])){
+                    Yii::$app->session->setFlash('error', $data['email'][0]);// its dislplays error msg on your form
+                }
+                if(isset($data['username'])){
+                    Yii::$app->session->setFlash('error', $data['username'][0]);// its dislplays error msg on your form
+                }
+                if(isset($data['mobile'])){
+                    Yii::$app->session->setFlash('error', $data['mobile'][0]);// its dislplays error msg on your form
+                }
+
                 return $this->goHome();
             }
-         }      
+         }
     }
 
     public function actionVerifyOtp()
@@ -368,39 +441,45 @@ class SiteController extends Controller
         // $user_type  = 'O';
 
          $form_data = Yii::$app->request->post();
-        // echo '<pre>'.print_r($form_data,true);die;
-         $otpcode    = $form_data['otp'];
-         // $uid        = $form_data['uid'];
-         $session = Yii::$app->session;
-         $uid = $form_data['uid'];
-         // $uid = $session->get('op_user_id');
-         $user_type  = $form_data['user_type'];
+         $otpcode   = $form_data['otp'];
+         $session   = Yii::$app->session;
+         $uid       = $form_data['uid'];
+         $user_type = $form_data['user_type'];
 
         if(empty($otpcode) || empty($uid) ){
             $return = array('status'=>0,'msg'=>'OTP and Userid fields are required.');
-        }else{ 
-            // $otpcode    = Yii::$app->request->post('otpcode');
-            // $uid        = Yii::$app->request->post('uid');
-            // $user_type  = Yii::$app->request->post('user_type');
-            $otpForm     = new MgpOtp();
+        }else{
+            $otpForm = new MgpOtp();
             $otpData = $otpForm::findOne(['user_type'=>$user_type,'uid'=>$uid,'otp'=>$otpcode]);
             if($otpData){
-                $ownerModel = MgpOwners::findOne($uid);
-                // echo '<pre>'.print_r($ownerModel,true);dsie;
-                $ownerModel->otp_status = 1;
-                if($ownerModel->save(false)){
-                     Yii::$app->session->setFlash('success', 'Your account has been successfully registered.');
-                    $return = array('status'=>1,'msg'=>'OTP Status updated successfully.');
-                }else{
-                    $return = array('status'=>0,'msg'=>'Failed to update OTP.');
+                if($user_type == "O"){
+                    $ownerModel = MgpOwners::findOne($uid);
+                    $ownerModel->otp_status = 1;
+                    if($ownerModel->save(false)){
+                         Yii::$app->session->setFlash('success', 'Your account has been successfully registered.');
+                        $return = array('status'=>1,'msg'=>'OTP Status updated successfully.');
+                    }else{
+                        $return = array('status'=>0,'msg'=>'Failed to update OTP.');
+                    }
                 }
+                else{
+                    $memberModel = MgpMembers::findOne($uid);
+                    $memberModel->status = 1;
+                    if($memberModel->save(false)){
+                         Yii::$app->session->setFlash('success', 'Your account has been successfully registered.');
+                        $return = array('status'=>1,'msg'=>'OTP Status updated successfully.');
+                    }else{
+                        $return = array('status'=>0,'msg'=>'Failed to update OTP.');
+                    }
+                }
+
             }else{
                 $return = array('status'=>0,'msg'=>'OTP mismatched. Plase enter valid OTP received in your given Mobile No.');
             }
-            echo json_encode($return);  //<pre>'.print_r($return,true);
+            echo json_encode($return);
             die;
         }
-        
+
 
     }
 
@@ -413,13 +492,13 @@ class SiteController extends Controller
         if($user['admin_package'] == 2 ){
             return $this->redirect(['site/owner-packages']);
         }else{
-            $model = new MgpPayments();        
+            $model = new MgpPayments();
              return $this->render('payment', [
                     'model' => $model,
                     'user_details'=> $user
-                ]);    
+                ]);
         }
-        
+
     }
 
 
@@ -457,7 +536,7 @@ class SiteController extends Controller
         $paymentModel->package_id = $form_data['MgpPayments']['package_id'];
         $paymentModel->reference_no = isset($form_data['MgpPayments']['reference_no']) ? $form_data['MgpPayments']['reference_no'] : '' ;
         $paymentModel->insert_time = date('Y-m-d H:i:s');
-        
+
 
         if($paymentModel->save(false)){
             $ownerModel = MgpOwners::findOne($uid);
@@ -468,8 +547,8 @@ class SiteController extends Controller
         }else{
             echo 0;
         }
-        
-        
+
+
         die;
     }
 
@@ -495,15 +574,15 @@ class SiteController extends Controller
         $ownerPackageModel->status = 1;
         $ownerPackageModel->created_at = date('Y-m-d H:i:s');
         $ownerPackageModel->created_by = $uid;
-        
+
 
         if($ownerPackageModel->save(false)){
             echo 1;
         }else{
             echo 0;
         }
-        
-        
+
+
         die;
     }
 
@@ -529,13 +608,13 @@ class SiteController extends Controller
     {
         $this->layout = false;
         // $user = Yii::$app->user->identity;
-        $model = new MgpPayments();        
-       
+        $model = new MgpPayments();
+
          return $this->render('otp', [
                     'model' => $model,
                     // 'user_details'=> $user
                 ]);
-        
+
     }
 
 
@@ -550,28 +629,98 @@ class SiteController extends Controller
 
         if(empty($uid) ){
             $return = array('status'=>0,'msg'=>'Failed to send the OTP');
-        }else{           
+        }else{
             $ownerData = MgpOwners::findOne(['id'=>$uid]);
             $otp_code = strtoupper(substr(md5(uniqid()), 0, 6));
             $text = 'Your verification OTP Code is '.$otp_code;
             $result = Yii::$app->Sms->sendSms($ownerData['mobile_no'], $text);
 
-            // change otp 
+            // change otp
              $otpModel = MgpOtp::findOne(['uid'=>$uid]);
              $otpModel->otp = $otp_code;
 
             if($otpModel->save(false)){
-                
+
                     $return = array('status'=>1,'msg'=>'OTP sent to the registered mobile.');
-                
+
             }else{
                 $return = array('status'=>0,'msg'=>'Failed to resend otp.');
             }
-            echo json_encode($return);  
-            die;
+
         }
-        
+         echo json_encode($return);
+            die;
+
     }
 
-  
+    public function actionPincodeBasedAddress()
+    {
+        $form_data = Yii::$app->request->post();
+        $pincode = $form_data['pincode'];
+
+        $addressData = Yii::$app->Sms->actionPincodesearch($pincode);
+        // echo '<pre>'; print_r($addressData); die;
+        echo json_encode($addressData);
+        die;
+    }
+
+    public function actionPdfGenerator()
+    {
+        $file_path =  Yii::$app->basePath.'/uploads/test.pdf';//echo $path;die;
+        ///var/www/html/mgp/frontend
+         // get your HTML raw content without any layouts or scripts
+        $content = 'this is ritesh the great.';
+        // $content = $this->renderPartial('_reportView');
+        //$fileName = 'test_'.time().'.pdf';
+        //$folder = $this->getModelSubDir() . '/';
+        // setup kartik\mpdf\Pdf component
+        $pdf = new Pdf([
+            // set to use core fonts only
+            'mode' => Pdf::MODE_CORE,
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4,
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            // stream to browser inline
+
+            'destination' => Pdf::DEST_FILE,
+            'filename' => $file_path,
+            // 'destination' => Pdf::DEST_FILE,
+            // your html content input
+            'content' => $content,
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            // any css to be embedded if required
+            'cssInline' => '.kv-heading-1{font-size:18px}',
+             // set mPDF properties on the fly
+            'options' => ['title' => ''],
+             // call mPDF methods on the fly
+            'methods' => [
+                'SetHeader'=>['Krajee Report Header'],
+                'SetFooter'=>['{PAGENO}'],
+            ]
+        ]);
+
+
+        //$pdf->Output($path. '/filename.pdf', 'F');
+
+        // return the pdf output as per the destination setting
+         return $pdf->render();
+    }
+
+    public function actionSendMail()
+    {
+        // echo $_SERVER['DOCUMENT_ROOT'];die;
+        // echo \Yii::$app->basePath;die;
+
+        $params = array();
+        $from = 'rohanp.com@gmail.com';
+        $to = 'rohanpugaonkar21@gmail.com';
+        $subject = 'test subject';
+        $attachment = \Yii::$app->basePath.'/uploads/test.pdf';
+        $bcc = '';
+        Yii::$app->Sms->actionSendmailattach($template,$params,$from,$to,$subject,$attachment,$bcc) ;
+    }
+
 }

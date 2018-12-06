@@ -34,6 +34,8 @@ class MgpOwners extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfa
     const STATUS_ACTIVE = 1;
     public $password_hash;
     public $auth_key;
+
+    public $district;
     /**
      * {@inheritdoc}
      */
@@ -74,7 +76,7 @@ class MgpOwners extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfa
             [['created_at', 'updated_at'], 'safe'],
             [['gym_name', 'owner_name', 'username'], 'string', 'max' => 50],
             [['password'], 'string', 'max' => 250],
-            [['password'], 'match', 'pattern' => '/^(?=.*[0-9])(?=.*[A-Z])([a-zA-Z0-9]+)$/' , 'message'=> 'Password must contain a Number, Capital letter and Small letter.'],
+            // [['password'], 'match', 'pattern' => '/^(?=.*[0-9])(?=.*[A-Z])([a-zA-Z0-9]+)$/' , 'message'=> 'Password must contain a Number, Capital letter and Small letter.'],
             [['email'], 'string', 'max' => 256],
         ];
     }

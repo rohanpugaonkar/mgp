@@ -8,11 +8,11 @@ use yii\base\InvalidConfigException;
 use nox\http\soap\HttpSoapClient;
 
 class Sms extends Component {
-	
+
 	/*public Login(LoginForm &$model) {
-		
+
 	}*/
-	
+
 	public function sendSms($to, $text) {
 		$endpoint = 'http://malert.in/new/api/api_http.php';
 		$options = [
@@ -27,10 +27,10 @@ class Sms extends Component {
 
 		$result = $this->callAPI('GET', $endpoint,$options);
 		return $result;
-			
+
 		}
-	
-	
+
+
 	private function callAPI($method, $url, $data){
 	   $curl = curl_init();
 
@@ -43,7 +43,7 @@ class Sms extends Component {
 		  case "PUT":
 			 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
 			 if ($data)
-				curl_setopt($curl, CURLOPT_POSTFIELDS, $data);			 					
+				curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 			 break;
 		  default:
 			 if ($data)
@@ -52,7 +52,7 @@ class Sms extends Component {
 
 	   // OPTIONS:
 	   curl_setopt($curl, CURLOPT_URL, $url);
-	   
+
 	   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 	   curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 
@@ -62,7 +62,7 @@ class Sms extends Component {
 	   curl_close($curl);
 	   return $result;
 	}
-	
+
 	 public static function actionSendmail($template,$params,$from,$to,$bcc,$subject)
     {
     	Yii::$app->mailer->compose($template, $params)
@@ -74,9 +74,9 @@ class Sms extends Component {
 	    return true;
     }
 
-	public static function actionSendmailattach($template,$params,$from,$to,$subject,$attachment,$bcc) 
+	public static function actionSendmailattach($template,$params,$from,$to,$subject,$attachment,$bcc)
     {
-		
+
 
     	Yii::$app->mailer->compose($template, $params)
 	    ->setFrom($from)
@@ -87,18 +87,18 @@ class Sms extends Component {
 	    ->send();
 	    return true;
     }
-	
+
 	public static function actionPincodesearch($pincode)
     {
         if (!empty($pincode)) {
             $data = '';
             try { //government api
-                $data = file_get_contents("https://api.data.gov.in/resource/6176ee09-3d56-4a3b-8115-21841576b2f6?api-key=579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b&format=json&limit=1&filters[pincode]=$pincode&fields=pincode,districtname,statename");
+                $data = file_get_contents("https://api.data.gov.in/resource/6176ee09-3d56-4a3b-8115-21841576b2f6?api-key=579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b&format=json&limit=1&filters[pincode]=$pincode&fields=pincode,districtname,statename,taluk");
                 $data_json = json_decode($data);
                 if (!empty($data_json->records)) {
                     $pin_data  = $data_json->records[0];
 
-                    return array("status" => "success","message" => "Success","district" => $pin_data->districtname,"state" => $pin_data->statename);
+                    return array("status" => "success","message" => "Success","district" => $pin_data->districtname,"state" => $pin_data->statename,'city'=>$pin_data->taluk);
                 }
                 else {
                     return "failed";
@@ -121,5 +121,5 @@ class Sms extends Component {
         }
     }
 
-	
+
 }

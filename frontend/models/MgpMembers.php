@@ -10,13 +10,13 @@ use Yii;
  * @property int $id
  * @property int $gym_owner_id
  * @property string $member_name
- * @property string $mobile_no
+ * @property int $mobile_no
  * @property string $email
  * @property string $username
  * @property string $password
  * @property string $address
  * @property int $pincode
- * @property int $city
+ * @property string $city
  * @property string $state
  * @property string $country
  * @property int $status
@@ -27,6 +27,11 @@ use Yii;
  */
 class MgpMembers extends \yii\db\ActiveRecord
 {
+    public $district;
+    public $password_hash;
+    public $auth_key;
+
+    /**
     /**
      * {@inheritdoc}
      */
@@ -41,12 +46,13 @@ class MgpMembers extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['gym_owner_id', 'member_name', 'mobile_no', 'email', 'username', 'password', 'address', 'pincode', 'city', 'state', 'country', 'status', 'created_at', 'created_by', 'updated_by'], 'required'],
-            [['gym_owner_id', 'mobile_no', 'pincode', 'city', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['gym_owner_id', 'member_name', 'mobile_no', 'email', 'username', 'password', 'address', 'pincode', 'city', 'state', 'country', 'status'], 'required'], //, 'created_at', 'created_by', 'updated_at', 'updated_by'
+            [['gym_owner_id', 'mobile_no', 'pincode', 'status', 'created_by', 'updated_by'], 'integer'],
             [['address'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['member_name', 'username', 'password', 'state', 'country'], 'string', 'max' => 50],
+            [['member_name', 'username', 'city', 'state', 'country'], 'string', 'max' => 50],
             [['email'], 'string', 'max' => 200],
+            [['password'], 'string', 'max' => 250],
         ];
     }
 
@@ -74,5 +80,10 @@ class MgpMembers extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'updated_by' => 'Updated By',
         ];
+    }
+
+    public function setPassword($password)
+    {
+        return $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     }
 }
