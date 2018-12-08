@@ -24,6 +24,16 @@ return [
         ],
 		'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
+			'enableSwiftMailerLogging' => true,
+			'useFileTransport' => false,
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'mail.mygymspartner.in',
+                'username' => 'noreply@mygympartner.in',
+                'password' => '!2#4%6',
+                'port' => '587',
+                'encryption' => 'tls',
+            ],
         ],
     ],
 ];

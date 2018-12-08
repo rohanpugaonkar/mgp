@@ -63,9 +63,9 @@ class Sms extends Component {
 	   return $result;
 	}
 
-	 public static function actionSendmail($template,$params,$from,$to,$bcc,$subject)
+	 public static function actionSendmail($from,$to,$bcc,$subject)
     {
-    	Yii::$app->mailer->compose($template, $params)
+    	Yii::$app->mailer->compose()
 	    ->setFrom($from)
 	    ->setTo($to)
 	    ->setSubject($subject)

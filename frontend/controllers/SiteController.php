@@ -708,19 +708,26 @@ class SiteController extends Controller
         // return the pdf output as per the destination setting
          return $pdf->render();
     }
+	
+	public function mailfilter($mail){
+		$trim = trim($mail);
+		$filter_var = filter_var($trim, FILTER_SANITIZE_EMAIL);
+		return  iconv('ISO-8859-1','UTF-8//IGNORE', $filter_var);
+	}
 
-    public function actionSendMail()
+    public function actionSendmail()
     {
         // echo $_SERVER['DOCUMENT_ROOT'];die;
         // echo \Yii::$app->basePath;die;
 
         $params = array();
-        $from = 'rohanp.com@gmail.com';
-        $to = 'rohanpugaonkar21@gmail.com';
-        $subject = 'test subject';
+        $from = 'noreply@mygympartner.in';
+        $to = 'stanlysam1@gmail.com';
+		
+        $subject = 'mygym mail subject';
         $attachment = \Yii::$app->basePath.'/uploads/test.pdf';
-        $bcc = '';
-        Yii::$app->Sms->actionSendmailattach($template,$params,$from,$to,$subject,$attachment,$bcc) ;
+        $bcc = 'noreply@mygympartner.in';
+        Yii::$app->Sms->actionSendmail($from,$to,$bcc,$subject) ;
     }
 
 }
